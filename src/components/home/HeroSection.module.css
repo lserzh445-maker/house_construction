@@ -1,0 +1,64 @@
+.hero {
+  position: relative;
+  min-height: 700px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+@media (min-width: 1024px) {
+  .heroBg {
+    background-attachment: fixed; /* Parallax */
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    150deg,
+    rgba(27, 94, 32, 0.78) 0%,
+    rgba(2, 30, 3, 0.6) 50%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+.statsBar {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.statDivider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+}
+
+.glowBtn {
+  box-shadow: 0 0 30px rgba(255, 145, 0, 0.4), 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.glowBtn:hover {
+  box-shadow: 0 0 40px rgba(255, 145, 0, 0.55), 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.scrollArrow {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) translateX(-50%); }
+  50%       { transform: translateY(8px) translateX(-50%); }
+}

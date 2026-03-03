@@ -1,0 +1,70 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Horizontal connector line (desktop, row 1) */
+.step {
+  position: relative;
+}
+
+/* Arrow after each step (except last in row) */
+.step:not(:nth-child(4n)):not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 28px;
+  right: -0.75rem;
+  width: 1.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, #1B5E20 0%, #A5D6A7 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 1023px) {
+  .step:not(:nth-child(2n)):not(:last-child)::after {
+    top: 28px;
+    right: -0.75rem;
+    width: 1.5rem;
+  }
+
+  /* Reset 4n rule */
+  .step:not(:nth-child(4n)):not(:last-child)::after {
+    content: '';
+  }
+}
+
+@media (max-width: 639px) {
+  .step::after {
+    display: none !important;
+  }
+}
+
+.stepNumber {
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #1B5E20;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
+}

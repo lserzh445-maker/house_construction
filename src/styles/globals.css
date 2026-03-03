@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  :root {
+    --primary: #1B5E20;
+    --secondary: #0288D1;
+    --accent: #FF9100;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-neutral-dark antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+
+  * {
+    @apply box-border;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold
+      hover:bg-primary-light active:bg-primary-dark
+      transition-colors duration-200
+      min-h-[48px] inline-flex items-center justify-center gap-2
+      disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white px-6 py-3 rounded-lg font-semibold
+      hover:bg-secondary-light active:bg-secondary-dark
+      transition-colors duration-200
+      min-h-[48px] inline-flex items-center justify-center gap-2
+      disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-white px-6 py-3 rounded-lg font-semibold
+      hover:bg-accent-light active:bg-accent-dark
+      transition-colors duration-200
+      min-h-[48px] inline-flex items-center justify-center gap-2
+      disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary text-primary px-6 py-3 rounded-lg font-semibold
+      hover:bg-primary hover:text-white
+      transition-colors duration-200
+      min-h-[48px] inline-flex items-center justify-center gap-2;
+  }
+
+  .section-padding {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  .section-title {
+    @apply font-heading text-2xl md:text-3xl font-bold text-neutral-dark mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-neutral-medium text-lg max-w-2xl;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-md overflow-hidden
+      hover:shadow-xl transition-shadow duration-300;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg
+      focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+      text-neutral-dark placeholder-gray-400
+      min-h-[48px] transition-shadow duration-200;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
