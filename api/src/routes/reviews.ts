@@ -1,60 +1,90 @@
+/**
+ * GET /api/reviews
+ * GET /api/reviews/:id
+ * GET /api/reviews/project/:project_id  (convenience alias)
+ */
+
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
-import type { Review, PaginatedResponse } from '../types'
+import { AppError } from '../middleware/errorHandler'
+import { reviewsRepo } from '../db/repository'
+import { REVIEWS } from '../db/mockData'
 
 const router = Router()
 
-const MOCK_REVIEWS: Review[] = Array.from({ length: 15 }, (_, i) => ({
-  id: `rev-${i + 1}`,
-  author: ['Иван Петров', 'Мария Сидорова', 'Алексей Козлов', 'Ольга Новикова', 'Дмитрий Соколов'][i % 5],
-  projectId: `project-${(i % 5) + 1}`,
-  rating: 5 - (i % 2 === 0 ? 0 : 1),
-  text: 'Отличный дом! Построили в срок, качество на высоте. Рекомендую всем.',
-  date: new Date(2025, 11 - (i % 6), 15).toISOString().split('T')[0],
-  videoUrl: i < 2 ? 'https://www.youtube.com/embed/placeholder' : undefined,
-  helpful: 3 + i * 2,
-  isApproved: true,
-}))
+// ─── Query schema ─────────────────────────────────────────────────────────────
 
-const querySchema = z.object({
-  page: z.coerce.number().min(1).default(1),
-  pageSize: z.coerce.number().min(1).max(50).default(10),
-  rating: z.coerce.number().min(1).max(5).optional(),
-  sortBy: z.enum(['newest', 'rating', 'helpful']).default('newest'),
+const listSchema = z.object({
+  page:       z.coerce.number().min(1).default(1),
+  page_size:  z.coerce.number().min(1).max(50).default(10),
+  // Filters
+  project_id: z.string().optional(),
+  rating:     z.coerce.number().int().min(1).max(5).optional(),
+  // Sorting: newest (default) | oldest | helpful | rating
+  sort:       z.enum(['newest', 'oldest', 'helpful', 'rating']).default('newest'),
 })
 
-// GET /api/reviews
-router.get('/', (req: Request, res: Response) => {
-  const { page, pageSize, rating, sortBy } = querySchema.parse(req.query)
+// ─── GET /api/reviews ─────────────────────────────────────────────────────────
 
-  let reviews = MOCK_REVIEWS.filter((r) => r.isApproved)
-  if (rating) reviews = reviews.filter((r) => r.rating === rating)
+router.get('/', async (req: Request, res: Response) => {
+  const q = listSchema.parse(req.query)
 
-  if (sortBy === 'newest') reviews.sort((a, b) => b.date.localeCompare(a.date))
-  else if (sortBy === 'rating') reviews.sort((a, b) => b.rating - a.rating)
-  else reviews.sort((a, b) => b.helpful - a.helpful)
+  const { data, total, avgRating } = await reviewsRepo.findMany({
+    page:       q.page,
+    page_size:  q.page_size,
+    project_id: q.project_id,
+    rating:     q.rating,
+    sort:       q.sort,
+  })
 
-  const total = reviews.length
-  const start = (page - 1) * pageSize
-  const data = reviews.slice(start, start + pageSize)
-
-  const response: PaginatedResponse<Review> = {
-    data,
-    total,
-    page,
-    pageSize,
-    totalPages: Math.ceil(total / pageSize),
-  }
-
-  res.json(response)
-})
-
-// GET /api/reviews/project/:projectId
-router.get('/project/:projectId', (req: Request, res: Response) => {
-  const reviews = MOCK_REVIEWS.filter(
-    (r) => r.projectId === req.params.projectId && r.isApproved
+  // Aggregate stats for the full filtered set (not just this page)
+  const approvedCount = REVIEWS.filter((r) => r.isApproved).length
+  const recommend     = Math.round(
+    (REVIEWS.filter((r) => r.isApproved && r.rating >= 4).length / Math.max(approvedCount, 1)) * 100,
   )
-  res.json({ data: reviews })
+
+  res.json({
+    data,
+    meta: {
+      total,
+      page:        q.page,
+      page_size:   q.page_size,
+      total_pages: Math.ceil(total / q.page_size),
+      avg_rating:  Math.round(avgRating * 10) / 10,
+      recommend_pct: recommend,
+    },
+  })
+})
+
+// ─── GET /api/reviews/project/:project_id ─────────────────────────────────────
+
+router.get('/project/:project_id', async (req: Request, res: Response) => {
+  const q  = listSchema.parse({ ...req.query, project_id: req.params.project_id })
+  const { data, total, avgRating } = await reviewsRepo.findMany({
+    page:       q.page,
+    page_size:  q.page_size,
+    project_id: req.params.project_id,
+    sort:       q.sort,
+  })
+
+  res.json({
+    data,
+    meta: {
+      total,
+      page:        q.page,
+      page_size:   q.page_size,
+      total_pages: Math.ceil(total / q.page_size),
+      avg_rating:  Math.round(avgRating * 10) / 10,
+    },
+  })
+})
+
+// ─── GET /api/reviews/:id ─────────────────────────────────────────────────────
+
+router.get('/:id', (req: Request, res: Response) => {
+  const review = REVIEWS.find((r) => r.id === req.params.id && r.isApproved)
+  if (!review) throw new AppError('Review not found', 404)
+  res.json({ data: review })
 })
 
 export default router

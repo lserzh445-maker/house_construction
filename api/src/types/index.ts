@@ -1,3 +1,5 @@
+// ─── Domain models ────────────────────────────────────────────────────────────
+
 export interface Project {
   id: string
   name: string
@@ -22,9 +24,9 @@ export interface Project {
   images: string[]
   floorPlans: string[]
   videoUrl?: string
-  category: string
-  style: string
-  features: string[]
+  category: string   // frame | one-story | two-story | with-mansard | finnish | canadian
+  style: string      // finnish | canadian | modern | barnhouse
+  features: string[] // terrace | sauna | garage | balcony | boiler-room
   rating?: number
   reviewCount?: number
   isPopular?: boolean
@@ -35,8 +37,8 @@ export interface Project {
 
 export interface Review {
   id: string
-  author: string
   projectId?: string
+  author: string
   rating: number
   text: string
   date: string
@@ -60,6 +62,8 @@ export interface BlogPost {
   metaDescription?: string
 }
 
+// ─── Lead / Form submissions ──────────────────────────────────────────────────
+
 export interface ContactLead {
   id: string
   type: 'call' | 'quote' | 'consultation' | 'custom-project'
@@ -73,22 +77,39 @@ export interface ContactLead {
   status: 'new' | 'in-progress' | 'completed'
 }
 
-export interface PaginationParams {
-  page?: number
-  pageSize?: number
+// ─── Calculator ───────────────────────────────────────────────────────────────
+
+export type CompletionType = 'base' | 'finishing' | 'turnkey'
+
+export type CalculatorOption = 'delivery' | 'foundation' | 'utilities' | 'insurance'
+
+export interface PriceBreakdown {
+  materials: number
+  labor: number
+  overhead: number
+  options: Record<CalculatorOption, number>
 }
 
-export interface ProjectFilters extends PaginationParams {
-  floors?: number | number[]
-  areaMin?: number
-  areaMax?: number
-  priceMin?: number
-  priceMax?: number
-  style?: string | string[]
-  features?: string | string[]
-  sortBy?: 'popular' | 'price-asc' | 'price-desc' | 'area-asc' | 'area-desc'
-  category?: string
+export interface CalculatorResult {
+  project_id: string | null
+  project_name: string
+  area: number
+  completion_type: CompletionType
+  options: CalculatorOption[]
+  price_breakdown: PriceBreakdown
+  construct_subtotal: number
+  options_total: number
+  total: number
+  price_per_sqm: number
+  monthly_payment: number
+  mortgage_info: {
+    term_years: number
+    rate_pct: number
+    note: string
+  }
 }
+
+// ─── API response wrappers ────────────────────────────────────────────────────
 
 export interface ApiResponse<T> {
   data: T
@@ -97,8 +118,36 @@ export interface ApiResponse<T> {
 
 export interface PaginatedResponse<T> {
   data: T[]
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
+  meta: {
+    total: number
+    page: number
+    page_size: number
+    total_pages: number
+    avg_rating?: number
+    recommend_pct?: number
+  }
+}
+
+// ─── Filter/query params ──────────────────────────────────────────────────────
+
+export interface ProjectFilters {
+  page?: number
+  page_size?: number
+  price_from?: number
+  price_to?: number
+  area_from?: number
+  area_to?: number
+  floors?: number
+  style?: string
+  category?: string
+  features?: string[]
+  sort?: 'popularity' | 'price_asc' | 'price_desc' | 'area_asc' | 'area_desc' | 'newest'
+}
+
+export interface ReviewFilters {
+  page?: number
+  page_size?: number
+  project_id?: string
+  rating?: number
+  sort?: 'newest' | 'oldest' | 'helpful' | 'rating'
 }

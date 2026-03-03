@@ -1,0 +1,170 @@
+// Prisma schema — house construction website
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Project ──────────────────────────────────────────────────────────────────
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String   @db.Text
+  category    String   // frame | one-story | two-story | with-mansard | finnish | canadian
+  style       String   // finnish | canadian | modern | barnhouse
+  features    String[] // terrace | sauna | garage | balcony | boiler-room
+  isPopular   Boolean  @default(false)
+  isNew       Boolean  @default(false)
+  videoUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  price       ProjectPrice?
+  chars       ProjectChars?
+  images      ProjectImage[]
+  floorPlans  FloorPlan[]
+  reviews     Review[]
+  leads       Lead[]
+
+  @@index([category])
+  @@index([style])
+  @@index([isPopular])
+}
+
+model ProjectPrice {
+  id            String @id @default(cuid())
+  projectId     String @unique
+  basePrice     Int    // RUB, without finishing
+  withFinishing Int    // RUB, with finishing (~+20%)
+  turnkey       Int    // RUB, fully turnkey (~+40%)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectChars {
+  id           String @id @default(cuid())
+  projectId    String @unique
+  area         Int    // m²
+  size         String // e.g. "7×8"
+  floors       Int    // 1 or 2
+  bedrooms     Int
+  bathrooms    Int
+  material     String
+  insulation   String
+  roofing      String
+  buildingTime String // e.g. "4–6 недель"
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  projectId String
+  url       String
+  alt       String?
+  order     Int     @default(0)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model FloorPlan {
+  id        String @id @default(cuid())
+  projectId String
+  url       String
+  floor     Int    @default(1)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+// ─── Review ───────────────────────────────────────────────────────────────────
+
+model Review {
+  id          String   @id @default(cuid())
+  projectId   String?
+  author      String
+  rating      Int      @db.SmallInt  // 1–5
+  text        String   @db.Text
+  videoUrl    String?
+  helpful     Int      @default(0)
+  isApproved  Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([rating])
+  @@index([isApproved, publishedAt])
+}
+
+// ─── Lead / Form submissions ──────────────────────────────────────────────────
+
+model Lead {
+  id             String     @id @default(cuid())
+  type           LeadType
+  name           String
+  phone          String
+  email          String?
+  projectId      String?
+  message        String?    @db.Text
+  completionType String?    // base | finishing | turnkey
+  bitrix24Id     String?    // CRM lead ID after sync
+  status         LeadStatus @default(NEW)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+
+model BlogPost {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  excerpt         String
+  content         String   @db.Text
+  imageUrl        String
+  author          String
+  category        String
+  readTime        Int
+  tags            String[]
+  metaDescription String?
+  publishedAt     DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([category])
+  @@index([publishedAt])
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum LeadType {
+  CALL
+  QUOTE
+  CONSULTATION
+  CUSTOM_PROJECT
+}
+
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+}
