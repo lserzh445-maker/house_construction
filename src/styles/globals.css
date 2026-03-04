@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Radix Accordion height animation ────────────────────────────────────── */
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to   { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to   { height: 0; opacity: 0; }
+}
+[data-radix-accordion-content][data-state='open'] {
+  animation: accordion-down 200ms ease-out;
+}
+[data-radix-accordion-content][data-state='closed'] {
+  animation: accordion-up 200ms ease-out;
+  overflow: hidden;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 @layer base {

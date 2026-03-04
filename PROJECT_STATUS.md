@@ -63,15 +63,42 @@
   - ✅ Тестирование всех форм
   - Коммит: "feat: implement forms (call, quote, consultation, project)"
 
-## 🔄 В ПРОЦЕССЕ:
+## ✅ Шаг 9.1: Калькулятор стоимости — завершён
 
+### Что реализовано
+- **`src/components/Calculator.tsx`** — полноценный переиспользуемый компонент:
+  - Шаг 1: Radix Select — загрузка всех 18 проектов через SWR (`/api/catalog?page_size=50`)
+  - Шаг 2: Completion type — 3 стилизованные radio-карточки (Без отделки ×1, С отделкой ×1.25, Под ключ ×1.45)
+  - Шаг 3: Options — Radix Checkbox (Доставка, Фундамент, Коммуникации, Страховка 3%)
+  - Real-time `useMemo` расчёт — без useEffect, без лагов
+  - Разбор по статьям: Материалы 40%, Работа 30%, Накладные 30% + каждая опция
+  - Ипотека: формула P = S*r*(1+r)^n / ((1+r)^n - 1), ставка 8%/12, срок 15 лет
+  - PDF смета: `window.open` + `print()` — браузерная PDF без библиотек
+  - «Узнать точную цену» → `FormModal` с `QuoteForm`, `projectId` передаётся автоматически
+  - `initialProjectId` prop — для встройки на карточку проекта
+- **`src/pages/calculator.tsx`** — переписан, использует `<Calculator />` компонент
+- TypeScript: 0 ошибок, `next build` ✓
+
+## ✅ Шаг 9: Калькулятор стоимости — полностью завершён
+
+### 9.3 + 9.4 — интеграция
+- **`/src/pages/index.tsx`** — новая секция «Рассчитайте стоимость» (после LatestBlog):
+  - Заголовок + подзаголовок, `<CalculatorComponent className="max-w-5xl mx-auto" />`
+  - Ссылка «Полная версия калькулятора →» (`/calculator`)
+  - Исправлен конфликт имён: `Calculator` (lucide) → `CalculatorIcon`, `CalculatorComponent` (компонент)
+- **`/src/pages/calculator.tsx`** — полноценная страница (переписана):
+  - Breadcrumb, Hero с иконкой, `<CalculatorComponent />`
+  - **FAQ секция** — 6 вопросов в Radix Accordion (`@radix-ui/react-accordion`)
+  - **CTA секция** — зелёный блок + `FormModal` с `QuoteForm`
+- **`/src/styles/globals.css`** — добавлены `@keyframes accordion-down/up` для плавной анимации Radix Accordion (через CSS-переменную `--radix-accordion-content-height`)
+
+## 🔄 В ПРОЦЕССЕ:
 ---
 
 ## ⏭️ Следующие шаги
 
 | Шаг | Описание | Статус |
 |-----|----------|--------|
-| 9 | Калькулятор стоимости (интерактивный, real-time расчёт) | ⏳ |
 | 10 | SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt | ⏳ |
 | 11 | CI/CD: GitHub Actions (lint + build + deploy) | ⏳ |
 
@@ -114,4 +141,4 @@ API:           /api/catalog, /api/projects/[id], /api/forms/*, /api/calculator, 
 
 ---
 
-_Последнее обновление: 2026-03-04 (Шаг 7)_
+_Последнее обновление: 2026-03-04 (Шаг 9.1)_
