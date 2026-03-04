@@ -16,10 +16,11 @@
 | 5 | Страницы-заглушки: about, blog, contacts, faq, financing, portfolio, promotions, privacy, reviews, services, calculator | — | three commit |
 | 6 | Каталог с фильтрацией: FilterPanel, ProductCard, CompareBar, useCatalog, catalogFilter, catalogStore | — | разбираюсь с шестым шагом |
 | 6-fix | Исправлена ошибка сериализации `videoUrl: undefined` в getServerSideProps каталога | 2026-03-04 | — |
+| 7 | Страница карточки проекта `/projects/[id]` — 16 элементов, 8 компонентов, SSR, Open Graph, JSON-LD | 2026-03-04 | — |
 
 ---
 
-## 🔄 Текущий шаг: 6 (Каталог) — завершён, ошибка исправлена
+## ✅ шаг: 6 (Каталог) — завершён, ошибка исправлена
 
 ### Что было исправлено
 - **Ошибка:** `Error serializing .fallbackData.data[3].videoUrl — undefined cannot be serialized as JSON`
@@ -28,11 +29,36 @@
 
 ---
 
+## ✅ шаг: 7 (Карточка проекта) — завершён
+
+### Что реализовано
+- **`/projects/[id].tsx`** полностью переписан — все 16 элементов
+- **Галерея** (`ProjectGallery`): Swiper + thumbs + fullscreen lightbox
+- **Инфопанель**: h1, артикул, бейджи, рейтинг, 6 характеристик, переключатель комплектации, цена с ипотекой
+- **CTA**: «Заказать расчёт» (открывает CallForm), «Калькулятор», Избранное + Сравнение (из Zustand)
+- **Соцсети** (`ShareButtons`): Telegram / WhatsApp / ВК / копировать ссылку
+- **Описание** + **Планы этажей** (`ProjectPlans`): изображения + lightbox + PDF-ссылки
+- **Видео**: YouTube embed (lazy, без autoplay)
+- **Характеристики** (таблица) + **Технические характеристики** (расширено)
+- **Отзывы** (`ProjectReviews`): из `project.reviews`, пагинация, YouTube видеоотзывы
+- **FAQ** (`ProjectFAQ`): 7 вопросов, accordion с анимацией
+- **Дополнительные услуги** (`ProjectServices`): 4 карточки-ссылки
+- **Финансирование** (`ProjectFinancing`): банки-партнёры + мини-калькулятор платежа
+- **Похожие проекты** (`ProjectSimilar`): алгоритм по стилю/категории/площади
+- **Footer CTA**: зелёный блок с двумя кнопками
+- **Open Graph** + **JSON-LD** (`schema.org/Product`) в `<Head>`
+- **SSR**: `getProjectById()` / `getSimilarProjects()` из `catalogFilter.ts` — реальные данные из JSON
+- **404**: `notFound: true` если проект не найден
+- **Fix**: HeroSection.tsx — `{...fadeIn}` → `variants={fadeIn}`
+
+## 🔄 В ПРОЦЕССЕ:
+
+---
+
 ## ⏭️ Следующие шаги
 
 | Шаг | Описание | Статус |
 |-----|----------|--------|
-| 7 | Карточка проекта `/projects/[id]` — галерея, характеристики, видео, CTA, похожие проекты | ⏳ |
 | 8 | Формы: CallForm, QuoteForm, ConsultationForm, ProjectForm (React Hook Form + Zod) | ⏳ |
 | 9 | Калькулятор стоимости (интерактивный, real-time расчёт) | ⏳ |
 | 10 | SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt | ⏳ |
@@ -77,4 +103,4 @@ API:           /api/catalog, /api/projects/[id], /api/forms/*, /api/calculator, 
 
 ---
 
-_Последнее обновление: 2026-03-04_
+_Последнее обновление: 2026-03-04 (Шаг 7)_
