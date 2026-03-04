@@ -51,6 +51,18 @@
 - **404**: `notFound: true` если проект не найден
 - **Fix**: HeroSection.tsx — `{...fadeIn}` → `variants={fadeIn}`
 
+## ✅ Шаг 8: Формы обратной связи - завершен
+### Что реализовано
+  - ✅ Zod схемы (4 формы)
+  - ✅ CallForm.tsx (Заказать звонок)
+  - ✅ QuoteForm.tsx (Получить расчет)
+  - ✅ ConsultationForm.tsx (Консультация)
+  - ✅ ProjectForm.tsx (Индивидуальный проект)
+  - ✅ FormModal.tsx (модальное окно)
+  - ✅ Интеграция на все страницы
+  - ✅ Тестирование всех форм
+  - Коммит: "feat: implement forms (call, quote, consultation, project)"
+
 ## 🔄 В ПРОЦЕССЕ:
 
 ---
@@ -59,7 +71,6 @@
 
 | Шаг | Описание | Статус |
 |-----|----------|--------|
-| 8 | Формы: CallForm, QuoteForm, ConsultationForm, ProjectForm (React Hook Form + Zod) | ⏳ |
 | 9 | Калькулятор стоимости (интерактивный, real-time расчёт) | ⏳ |
 | 10 | SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt | ⏳ |
 | 11 | CI/CD: GitHub Actions (lint + build + deploy) | ⏳ |

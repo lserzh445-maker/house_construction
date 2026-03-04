@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Calculator, Download, Phone } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
-import CallForm from '@/components/forms/CallForm'
+import FormModal from '@/components/modals/FormModal'
 import { formatPrice } from '@/utils/formatPrice'
 
 const PROJECTS_LIST = [
@@ -29,7 +29,7 @@ export default function CalculatorPage() {
   const [customArea, setCustomArea] = useState(100)
   const [configuration, setConfiguration] = useState<'base' | 'finishing' | 'turnkey'>('base')
   const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set())
-  const [showForm, setShowForm] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const project = PROJECTS_LIST.find((p) => p.id === selectedProject)!
   const isCustom = selectedProject === 'custom'
@@ -218,30 +218,28 @@ export default function CalculatorPage() {
                   Расчёт приблизительный. Точная стоимость определяется после выезда специалиста на участок.
                 </p>
 
-                {!showForm ? (
-                  <div className="space-y-3">
-                    <button onClick={() => setShowForm(true)} className="btn-primary w-full">
-                      <Phone size={18} />
-                      Узнать точную цену
-                    </button>
-                    <button className="btn-outline w-full text-sm">
-                      <Download size={16} />
-                      Скачать смету (PDF)
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <CallForm onSuccess={() => setShowForm(false)} />
-                    <button onClick={() => setShowForm(false)} className="mt-2 text-xs text-neutral-medium hover:text-neutral-dark w-full">
-                      Отмена
-                    </button>
-                  </div>
-                )}
+                <div className="space-y-3">
+                  <button onClick={() => setModalOpen(true)} className="btn-primary w-full">
+                    <Phone size={18} />
+                    Узнать точную цену
+                  </button>
+                  <button className="btn-outline w-full text-sm">
+                    <Download size={16} />
+                    Скачать смету (PDF)
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <FormModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        formType="quote"
+        projectId={selectedProject !== 'custom' ? selectedProject : undefined}
+      />
     </Layout>
   )
 }

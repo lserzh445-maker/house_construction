@@ -11,6 +11,18 @@ export function formatArea(area: number): string {
   return `${area} м²`
 }
 
+/** Live masking for phone input: +7 (XXX) XXX-XX-XX */
+export function formatPhoneInput(raw: string): string {
+  const digits = raw.replace(/\D/g, '')
+  const local = digits.startsWith('8') || digits.startsWith('7') ? digits.slice(1) : digits
+  const d = local.slice(0, 10)
+  if (d.length === 0) return ''
+  if (d.length <= 3) return `+7 (${d}`
+  if (d.length <= 6) return `+7 (${d.slice(0, 3)}) ${d.slice(3)}`
+  if (d.length <= 8) return `+7 (${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`
+  return `+7 (${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6, 8)}-${d.slice(8)}`
+}
+
 export function formatPhone(phone: string): string {
   const digits = phone.replace(/\D/g, '')
   if (digits.length === 11) {

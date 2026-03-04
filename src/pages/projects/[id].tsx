@@ -7,7 +7,7 @@ import {
   Layers, Ruler, BarChart2, ArrowLeft, Flame,
 } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
-import CallForm from '@/components/forms/CallForm'
+import FormModal, { type FormType } from '@/components/modals/FormModal'
 import ProjectGallery    from '@/components/project/ProjectGallery'
 import ProjectPlans      from '@/components/project/ProjectPlans'
 import ProjectFAQ        from '@/components/project/ProjectFAQ'
@@ -70,7 +70,10 @@ const TECH_SPECS = (p: Project) => [
 
 export default function ProjectPage({ project, similar }: ProjectPageProps) {
   const [configuration, setConfiguration] = useState<'base' | 'finishing' | 'turnkey'>('base')
-  const [showForm, setShowForm]           = useState(false)
+  const [modalOpen, setModalOpen]         = useState(false)
+  const [modalType, setModalType]         = useState<FormType>('quote')
+
+  const openModal = (type: FormType) => { setModalType(type); setModalOpen(true) }
 
   const isFavorite  = useCatalogStore((s) => s.isFavorite(project.id))
   const isInCompare = useCatalogStore((s) => s.isInCompare(project.id))
@@ -237,32 +240,22 @@ export default function ProjectPage({ project, similar }: ProjectPageProps) {
             </div>
 
             {/* CTA buttons (element #8) */}
-            {!showForm ? (
-              <div className="flex flex-col gap-3 mb-4">
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="btn-primary w-full text-base"
-                >
-                  <Phone size={18} />
-                  Заказать расчёт стоимости
-                </button>
-                <Link href="/calculator" className="btn-outline w-full text-base text-center">
-                  <Calculator size={18} />
-                  Онлайн-калькулятор
-                </Link>
-              </div>
-            ) : (
-              <div className="border border-green-100 rounded-xl p-4 mb-4 bg-green-50">
-                <h3 className="font-semibold text-gray-800 mb-3">Заказать звонок</h3>
-                <CallForm projectName={project.name} onSuccess={() => setShowForm(false)} />
-                <button
-                  onClick={() => setShowForm(false)}
-                  className="mt-3 text-sm text-gray-400 hover:text-gray-600 w-full transition-colors"
-                >
-                  Отмена
-                </button>
-              </div>
-            )}
+            <div className="flex flex-col gap-3 mb-4">
+              <button
+                onClick={() => openModal('quote')}
+                className="btn-primary w-full text-base"
+              >
+                <Phone size={18} />
+                Заказать расчёт стоимости
+              </button>
+              <button
+                onClick={() => openModal('call')}
+                className="btn-outline w-full text-base"
+              >
+                <Calculator size={18} />
+                Онлайн-калькулятор
+              </button>
+            </div>
 
             {/* Favorite / Compare / Compare link */}
             <div className="flex flex-wrap gap-2 mb-4">
@@ -431,23 +424,30 @@ export default function ProjectPage({ project, similar }: ProjectPageProps) {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              onClick={() => { setShowForm(true); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+              onClick={() => openModal('call')}
               className="bg-white text-[#1B5E20] hover:bg-green-50 font-semibold px-8 py-3 rounded-xl transition-colors min-h-[48px] inline-flex items-center justify-center gap-2"
             >
               <Phone size={18} />
               Заказать звонок
             </button>
-            <Link
-              href="/calculator"
+            <button
+              onClick={() => openModal('quote')}
               className="bg-[#FF9100] hover:bg-orange-500 text-white font-semibold px-8 py-3 rounded-xl transition-colors min-h-[48px] inline-flex items-center justify-center gap-2"
             >
               <Calculator size={18} />
               Получить расчёт
-            </Link>
+            </button>
           </div>
         </div>
 
       </div>
+
+      <FormModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        formType={modalType}
+        projectId={project.id}
+      />
     </Layout>
   )
 }
