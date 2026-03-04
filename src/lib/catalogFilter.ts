@@ -67,7 +67,7 @@ function toProject(p: ProjectJson): Project {
     },
     images:      p.images,
     floorPlans:  p.floorPlans,
-    videoUrl:    p.videoUrl ?? undefined,
+    videoUrl:    p.videoUrl,
     category:    p.category as Project['category'],
     style:       STYLE_MAP[p.style] ?? 'modern',
     features:    p.features,
