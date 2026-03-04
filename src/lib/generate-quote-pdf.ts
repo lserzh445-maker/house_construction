@@ -286,23 +286,24 @@ export async function generateQuotePDF(data: CalculatorData): Promise<void> {
     `${String(data.generatedAt.getMonth() + 1).padStart(2, '0')}-` +
     `${String(data.generatedAt.getDate()).padStart(2, '0')}.pdf`
 
+  // Create an off-viewport container that html2canvas can still measure.
+  // position:fixed + top:0 keeps it inside the viewport (left:-9999px does not).
+  // opacity:0.01 makes it invisible without using display:none (which blocks capture).
   const container = document.createElement('div')
   container.innerHTML = buildSmetaHtml(data)
-
-  // Temporarily attach so html2canvas can measure it
-  container.style.position = 'absolute'
-  container.style.left = '-9999px'
-  container.style.top  = '0'
+  container.style.cssText =
+    'position:fixed;top:0;left:0;width:794px;' +
+    'z-index:-9999;pointer-events:none;opacity:0.01;overflow:hidden'
   document.body.appendChild(container)
 
   try {
     await html2pdf()
       .set({
-        margin:     [10, 0, 10, 0],   // top, right, bottom, left (mm)
+        margin:      [10, 0, 10, 0],   // top, right, bottom, left (mm)
         filename,
-        image:      { type: 'jpeg', quality: 0.95 },
+        image:       { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
         enableLinks: false,
       })
       .from(container)
