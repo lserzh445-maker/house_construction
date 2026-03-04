@@ -21,7 +21,7 @@ export interface Project {
   }
   images: string[]
   floorPlans: string[]
-  videoUrl?: string
+  videoUrl?: string | null
   category: 'frame' | 'cottage' | 'one-story' | 'two-story' | 'with-mansard' | 'finnish'
   style: 'finnish' | 'canadian' | 'modern' | 'barnhouse'
   features: string[]
