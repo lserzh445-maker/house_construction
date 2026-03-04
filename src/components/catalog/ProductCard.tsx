@@ -1,32 +1,45 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Heart, Bed, Home, ArrowRight } from 'lucide-react'
+import { Heart, Bed, Home, ArrowRight, BarChart2 } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { formatPrice, formatArea } from '@/utils/formatPrice'
+import { useCatalogStore } from '@/store/catalogStore'
 import type { Project } from '@/types'
 
 interface ProductCardProps {
   project: Project
-  onFavoriteToggle?: (id: string) => void
-  isFavorite?: boolean
 }
 
-export default function ProductCard({
-  project,
-  onFavoriteToggle,
-  isFavorite = false,
-}: ProductCardProps) {
+export default function ProductCard({ project }: ProductCardProps) {
   const [imgError, setImgError] = useState(false)
+
+  const isFavorite  = useCatalogStore((s) => s.isFavorite(project.id))
+  const isInCompare = useCatalogStore((s) => s.isInCompare(project.id))
+  const compareLen  = useCatalogStore((s) => s.compare.length)
+  const toggleFav   = useCatalogStore((s) => s.toggleFavorite)
+  const toggleCmp   = useCatalogStore((s) => s.toggleCompare)
+
+  const compareDisabled = !isInCompare && compareLen >= 4
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.preventDefault()
-    onFavoriteToggle?.(project.id)
+    toggleFav(project.id)
+  }
+
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (!compareDisabled) toggleCmp(project)
   }
 
   return (
-    <Link href={`/projects/${project.id}`} className="group block">
-      <div className="card h-full flex flex-col">
+    <Link href={`/projects/${project.slug}`} className="group block">
+      <div
+        className={cn(
+          'card h-full flex flex-col transition-shadow duration-200',
+          isInCompare && 'ring-2 ring-secondary',
+        )}
+      >
         {/* Image */}
         <div className="relative aspect-[16/10] overflow-hidden bg-neutral-light">
           {!imgError && project.images[0] ? (
@@ -55,18 +68,40 @@ export default function ProductCard({
             )}
           </div>
 
-          {/* Favorite */}
-          <button
-            onClick={handleFavorite}
-            className={cn(
-              'absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center',
-              'bg-white/90 backdrop-blur-sm transition-colors duration-200',
-              isFavorite ? 'text-red-500' : 'text-gray-400 hover:text-red-400'
-            )}
-            aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
-          >
-            <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
-          </button>
+          {/* Top-right controls: compare + favorite */}
+          <div className="absolute top-3 right-3 flex flex-col gap-1.5">
+            {/* Favorite */}
+            <button
+              onClick={handleFavorite}
+              className={cn(
+                'w-8 h-8 rounded-full flex items-center justify-center',
+                'bg-white/90 backdrop-blur-sm transition-colors duration-200',
+                isFavorite ? 'text-red-500' : 'text-gray-400 hover:text-red-400',
+              )}
+              aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            >
+              <Heart size={15} fill={isFavorite ? 'currentColor' : 'none'} />
+            </button>
+
+            {/* Compare */}
+            <button
+              onClick={handleCompare}
+              disabled={compareDisabled}
+              className={cn(
+                'w-8 h-8 rounded-full flex items-center justify-center',
+                'bg-white/90 backdrop-blur-sm transition-colors duration-200',
+                isInCompare
+                  ? 'text-secondary'
+                  : compareDisabled
+                  ? 'text-gray-200 cursor-not-allowed'
+                  : 'text-gray-400 hover:text-secondary',
+              )}
+              aria-label={isInCompare ? 'Убрать из сравнения' : 'Добавить к сравнению'}
+              title={compareDisabled ? 'Можно сравнить не более 4 проектов' : undefined}
+            >
+              <BarChart2 size={15} />
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -97,7 +132,7 @@ export default function ProductCard({
                     key={star}
                     className={cn(
                       'text-base',
-                      star <= Math.round(project.rating!) ? 'text-yellow-400' : 'text-gray-200'
+                      star <= Math.round(project.rating!) ? 'text-yellow-400' : 'text-gray-200',
                     )}
                   >
                     ★
@@ -105,7 +140,7 @@ export default function ProductCard({
                 ))}
               </div>
               <span className="text-xs text-neutral-medium">
-                {project.rating.toFixed(1)} ({project.reviewCount} отзывов)
+                {project.rating.toFixed(1)} ({project.reviewCount} отз.)
               </span>
             </div>
           )}
@@ -122,10 +157,7 @@ export default function ProductCard({
             {/* Actions */}
             <div className="flex gap-2">
               <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  // Open call form modal
-                }}
+                onClick={(e) => e.preventDefault()}
                 className="flex-1 btn-accent text-sm px-3 py-2 min-h-0 h-10"
               >
                 Узнать цену

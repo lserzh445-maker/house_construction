@@ -1,49 +1,129 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import * as Slider from '@radix-ui/react-slider'
 import { RotateCcw } from 'lucide-react'
-import type { FilterState } from '@/types'
+import { cn } from '@/utils/cn'
+import type { CatalogParams } from '@/hooks/useCatalog'
 
-interface FilterPanelProps {
-  filters: FilterState
-  onChange: (filters: FilterState) => void
-  onReset: () => void
-}
+/* ─── Constants ──────────────────────────────────────────────────────────── */
+
+const AREA_MIN  = 40
+const AREA_MAX  = 250
+const PRICE_MIN = 3_000_000
+const PRICE_MAX = 25_000_000
+const PRICE_STEP = 500_000
+
+const FLOORS_OPTIONS = [
+  { value: '1',       label: '1 этаж' },
+  { value: '2',       label: '2 этажа' },
+  { value: 'mansard', label: 'Мансарда' },
+]
 
 const STYLES = [
-  { value: 'finnish', label: 'Финские' },
+  { value: 'finnish',  label: 'Финские' },
   { value: 'canadian', label: 'Канадские' },
-  { value: 'modern', label: 'Современные' },
-  { value: 'barnhouse', label: 'Барнхаус' },
+  { value: 'modern',   label: 'Современные' },
+  { value: 'barnhouse',label: 'Барнхаус' },
 ]
 
 const FEATURES = [
-  { value: 'garage', label: 'Гараж' },
-  { value: 'terrace', label: 'Терраса' },
-  { value: 'sauna', label: 'Сауна' },
+  { value: 'terrace',     label: 'Терраса' },
+  { value: 'sauna',       label: 'Сауна' },
+  { value: 'garage',      label: 'Гараж' },
+  { value: 'balcony',     label: 'Балкон' },
   { value: 'boiler-room', label: 'Котельная' },
-  { value: 'balcony', label: 'Балкон' },
 ]
 
-const SORT_OPTIONS = [
-  { value: 'popular', label: 'По популярности' },
-  { value: 'price-asc', label: 'Цена: по возрастанию' },
-  { value: 'price-desc', label: 'Цена: по убыванию' },
-  { value: 'area-asc', label: 'Площадь: по возрастанию' },
-  { value: 'area-desc', label: 'Площадь: по убыванию' },
-]
+/* ─── Helpers ────────────────────────────────────────────────────────────── */
 
-export default function FilterPanel({ filters, onChange, onReset }: FilterPanelProps) {
-  const update = (partial: Partial<FilterState>) => onChange({ ...filters, ...partial })
+function fmtArea(v: number) { return `${v} м²` }
+function fmtPrice(v: number) { return `${(v / 1_000_000).toFixed(1)}М ₽` }
 
-  const toggleArrayValue = (key: 'floors' | 'style' | 'features', value: string | number) => {
-    const current = (filters[key] as (string | number)[] | undefined) || []
-    const updated = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value]
-    update({ [key]: updated.length > 0 ? updated : undefined })
+/* ─── Props ──────────────────────────────────────────────────────────────── */
+
+interface FilterPanelProps {
+  params:   CatalogParams
+  onChange: (partial: Partial<CatalogParams>) => void
+  onReset:  () => void
+}
+
+/* ─── Slider wrapper ─────────────────────────────────────────────────────── */
+
+function RangeSlider({
+  label, min, max, step, value, format, onCommit,
+}: {
+  label:    string
+  min:      number
+  max:      number
+  step:     number
+  value:    [number, number]
+  format:   (v: number) => string
+  onCommit: (v: [number, number]) => void
+}) {
+  const [local, setLocal] = useState<[number, number]>(value)
+
+  // sync when parent resets
+  useEffect(() => { setLocal(value) }, [value])
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold text-sm">{label}</h3>
+        <span className="text-xs text-neutral-medium">
+          {format(local[0])} — {format(local[1])}
+        </span>
+      </div>
+      <Slider.Root
+        className="relative flex items-center select-none touch-none w-full h-5"
+        min={min}
+        max={max}
+        step={step}
+        value={local}
+        onValueChange={(v) => setLocal(v as [number, number])}
+        onValueCommit={(v) => onCommit(v as [number, number])}
+      >
+        <Slider.Track className="bg-gray-200 relative grow rounded-full h-[3px]">
+          <Slider.Range className="absolute bg-primary rounded-full h-full" />
+        </Slider.Track>
+        <Slider.Thumb
+          className="block w-5 h-5 bg-white border-2 border-primary rounded-full shadow
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label={`Минимум ${label}`}
+        />
+        <Slider.Thumb
+          className="block w-5 h-5 bg-white border-2 border-primary rounded-full shadow
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label={`Максимум ${label}`}
+        />
+      </Slider.Root>
+    </div>
+  )
+}
+
+/* ─── Component ──────────────────────────────────────────────────────────── */
+
+export default function FilterPanel({ params, onChange, onReset }: FilterPanelProps) {
+  const areaValue:  [number, number] = [params.area_from  ?? AREA_MIN,  params.area_to  ?? AREA_MAX]
+  const priceValue: [number, number] = [params.price_from ?? PRICE_MIN, params.price_to ?? PRICE_MAX]
+
+  const toggleStyle = (value: string) => {
+    const current = params.style ?? []
+    onChange({
+      style: current.includes(value) ? current.filter((s) => s !== value) : [...current, value],
+      page:  undefined,
+    })
+  }
+
+  const toggleFeature = (value: string) => {
+    const current = params.features ?? []
+    onChange({
+      features: current.includes(value) ? current.filter((f) => f !== value) : [...current, value],
+      page:     undefined,
+    })
   }
 
   return (
     <aside className="w-full bg-white rounded-xl border border-gray-100 p-5 space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="font-heading font-semibold text-lg">Фильтры</h2>
         <button
@@ -55,97 +135,32 @@ export default function FilterPanel({ filters, onChange, onReset }: FilterPanelP
         </button>
       </div>
 
-      {/* Floors */}
+      {/* ── Floors ────────────────────────────────────────────────────────── */}
       <div>
         <h3 className="font-semibold text-sm mb-3">Этажность</h3>
-        <div className="flex gap-2">
-          {[1, 2].map((floor) => (
-            <button
-              key={floor}
-              onClick={() => toggleArrayValue('floors', floor)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${
-                filters.floors?.includes(floor)
-                  ? 'border-primary bg-primary text-white'
-                  : 'border-gray-200 text-neutral-dark hover:border-primary'
-              }`}
-            >
-              {floor} этаж{floor === 1 ? '' : 'а'}
-            </button>
-          ))}
-          <button
-            onClick={() => toggleArrayValue('floors', 1.5)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${
-              filters.floors?.includes(1.5)
-                ? 'border-primary bg-primary text-white'
-                : 'border-gray-200 text-neutral-dark hover:border-primary'
-            }`}
-          >
-            Мансарда
-          </button>
-        </div>
-      </div>
-
-      {/* Area */}
-      <div>
-        <h3 className="font-semibold text-sm mb-3">
-          Площадь, м² ({filters.areaMin ?? 50}–{filters.areaMax ?? 300}+)
-        </h3>
-        <div className="flex gap-3">
-          <input
-            type="number"
-            placeholder="От"
-            value={filters.areaMin ?? ''}
-            onChange={(e) => update({ areaMin: e.target.value ? Number(e.target.value) : undefined })}
-            className="input-field text-sm py-2 min-h-0 h-10"
-            min={0}
-          />
-          <input
-            type="number"
-            placeholder="До"
-            value={filters.areaMax ?? ''}
-            onChange={(e) => update({ areaMax: e.target.value ? Number(e.target.value) : undefined })}
-            className="input-field text-sm py-2 min-h-0 h-10"
-            min={0}
-          />
-        </div>
-      </div>
-
-      {/* Price */}
-      <div>
-        <h3 className="font-semibold text-sm mb-3">Цена, ₽</h3>
-        <div className="flex gap-3">
-          <input
-            type="number"
-            placeholder="От"
-            value={filters.priceMin ?? ''}
-            onChange={(e) => update({ priceMin: e.target.value ? Number(e.target.value) : undefined })}
-            className="input-field text-sm py-2 min-h-0 h-10"
-            min={0}
-          />
-          <input
-            type="number"
-            placeholder="До"
-            value={filters.priceMax ?? ''}
-            onChange={(e) => update({ priceMax: e.target.value ? Number(e.target.value) : undefined })}
-            className="input-field text-sm py-2 min-h-0 h-10"
-            min={0}
-          />
-        </div>
-      </div>
-
-      {/* Style */}
-      <div>
-        <h3 className="font-semibold text-sm mb-3">Стиль</h3>
         <div className="flex flex-wrap gap-2">
-          {STYLES.map(({ value, label }) => (
+          {/* "Any" option */}
+          <button
+            onClick={() => onChange({ floors: undefined, page: undefined })}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-colors',
+              params.floors === undefined
+                ? 'border-primary bg-primary text-white'
+                : 'border-gray-200 text-neutral-dark hover:border-primary',
+            )}
+          >
+            Любая
+          </button>
+          {FLOORS_OPTIONS.map(({ value, label }) => (
             <button
               key={value}
-              onClick={() => toggleArrayValue('style', value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-colors ${
-                filters.style?.includes(value)
+              onClick={() => onChange({ floors: value, page: undefined })}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-colors',
+                params.floors === value
                   ? 'border-primary bg-primary text-white'
-                  : 'border-gray-200 text-neutral-dark hover:border-primary'
-              }`}
+                  : 'border-gray-200 text-neutral-dark hover:border-primary',
+              )}
             >
               {label}
             </button>
@@ -153,16 +168,46 @@ export default function FilterPanel({ filters, onChange, onReset }: FilterPanelP
         </div>
       </div>
 
-      {/* Features */}
+      {/* ── Area slider ───────────────────────────────────────────────────── */}
+      <RangeSlider
+        label="Площадь, м²"
+        min={AREA_MIN}
+        max={AREA_MAX}
+        step={5}
+        value={areaValue}
+        format={fmtArea}
+        onCommit={([from, to]) => onChange({
+          area_from: from > AREA_MIN ? from : undefined,
+          area_to:   to   < AREA_MAX ? to   : undefined,
+          page:      undefined,
+        })}
+      />
+
+      {/* ── Price slider ──────────────────────────────────────────────────── */}
+      <RangeSlider
+        label="Цена"
+        min={PRICE_MIN}
+        max={PRICE_MAX}
+        step={PRICE_STEP}
+        value={priceValue}
+        format={fmtPrice}
+        onCommit={([from, to]) => onChange({
+          price_from: from > PRICE_MIN ? from : undefined,
+          price_to:   to   < PRICE_MAX ? to   : undefined,
+          page:       undefined,
+        })}
+      />
+
+      {/* ── Style ─────────────────────────────────────────────────────────── */}
       <div>
-        <h3 className="font-semibold text-sm mb-3">Дополнительно</h3>
+        <h3 className="font-semibold text-sm mb-3">Стиль</h3>
         <div className="space-y-2">
-          {FEATURES.map(({ value, label }) => (
+          {STYLES.map(({ value, label }) => (
             <label key={value} className="flex items-center gap-3 cursor-pointer group">
               <input
                 type="checkbox"
-                checked={filters.features?.includes(value) ?? false}
-                onChange={() => toggleArrayValue('features', value)}
+                checked={params.style?.includes(value) ?? false}
+                onChange={() => toggleStyle(value)}
                 className="w-4 h-4 accent-primary"
               />
               <span className="text-sm text-neutral-dark group-hover:text-primary transition-colors">
@@ -173,20 +218,24 @@ export default function FilterPanel({ filters, onChange, onReset }: FilterPanelP
         </div>
       </div>
 
-      {/* Sort */}
+      {/* ── Features ──────────────────────────────────────────────────────── */}
       <div>
-        <h3 className="font-semibold text-sm mb-3">Сортировка</h3>
-        <select
-          value={filters.sortBy ?? 'popular'}
-          onChange={(e) => update({ sortBy: e.target.value as FilterState['sortBy'] })}
-          className="input-field text-sm py-2 min-h-0 h-10"
-        >
-          {SORT_OPTIONS.map(({ value, label }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
+        <h3 className="font-semibold text-sm mb-3">Дополнительно</h3>
+        <div className="space-y-2">
+          {FEATURES.map(({ value, label }) => (
+            <label key={value} className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={params.features?.includes(value) ?? false}
+                onChange={() => toggleFeature(value)}
+                className="w-4 h-4 accent-primary"
+              />
+              <span className="text-sm text-neutral-dark group-hover:text-primary transition-colors">
+                {label}
+              </span>
+            </label>
           ))}
-        </select>
+        </div>
       </div>
     </aside>
   )
