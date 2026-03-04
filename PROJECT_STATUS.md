@@ -92,6 +92,23 @@
   - **CTA секция** — зелёный блок + `FormModal` с `QuoteForm`
 - **`/src/styles/globals.css`** — добавлены `@keyframes accordion-down/up` для плавной анимации Radix Accordion (через CSS-переменную `--radix-accordion-content-height`)
 
+## ✅ Шаг 9.5: Тестирование калькулятора — завершён
+
+### Что проверено и исправлено
+- **SWR загрузка**: `isLoading` спиннер → 18 проектов из `/api/catalog?page_size=50` ✓
+- **Выбор проекта**: Radix Select, быстрые характеристики под дропдауном ✓
+- **Комплектация**: radio-карточки, `aria-pressed`, visual state ✓
+- **Опции**: Radix Checkbox, `Set<OptionId>`, toggle без мутаций ✓
+- **Расчёт**: `useMemo` — материалы 40%, работа 30%, накладные 30%, ипотека 8%/12/15лет ✓
+- **PDF**: `html2pdf.js` dynammic import, SSR guard, `pdfLoading` двойной клик ✓
+- **FormModal**: `formType="quote"`, `projectId` передаётся только при реальном выборе ✓
+- **Адаптивность**: `grid-cols-1 lg:grid-cols-[1fr_360px]`, `sm:grid-cols-3` ✓
+- **TypeScript**: 0 ошибок (`tsc --noEmit`) ✓
+- **Fix 1**: `onValueChange={(v) => setProjectId(v === '__none__' ? '' : v)}` — триггер правильно серел
+- **Fix 2**: `projectId={project ? projectId : undefined}` — FormModal получает только валидный ID
+
+---
+
 ## 🔄 В ПРОЦЕССЕ:
 ---
 
@@ -141,4 +158,4 @@ API:           /api/catalog, /api/projects/[id], /api/forms/*, /api/calculator, 
 
 ---
 
-_Последнее обновление: 2026-03-04 (Шаг 9.1)_
+_Последнее обновление: 2026-03-04 (Шаг 9.5)_
