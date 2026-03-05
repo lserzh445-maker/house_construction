@@ -110,13 +110,13 @@
 ---
 
 ## 🔄 В ПРОЦЕССЕ:
+SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt
 ---
 
 ## ⏭️ Следующие шаги
 
 | Шаг | Описание | Статус |
 |-----|----------|--------|
-| 10 | SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt | ⏳ |
 | 11 | CI/CD: GitHub Actions (lint + build + deploy) | ⏳ |
 
 ---

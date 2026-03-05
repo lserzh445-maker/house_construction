@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { GetServerSideProps } from 'next'
-import Head from 'next/head'
 import Link from 'next/link'
 import {
   Heart, Phone, Calculator, CheckCircle, Home, Bed, Bath, Clock,
   Layers, Ruler, BarChart2, ArrowLeft, Flame,
 } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
+import Breadcrumb from '@/components/ui/Breadcrumb'
 import FormModal, { type FormType } from '@/components/modals/FormModal'
 import ProjectGallery    from '@/components/project/ProjectGallery'
 import ProjectPlans      from '@/components/project/ProjectPlans'
@@ -19,6 +19,7 @@ import ShareButtons      from '@/components/project/ShareButtons'
 import { formatPrice, formatArea } from '@/utils/formatPrice'
 import { useCatalogStore } from '@/store/catalogStore'
 import { getProjectById, getSimilarProjects } from '@/lib/catalogFilter'
+import { generateProductSchema, generateBreadcrumbSchema } from '@/lib/seo'
 import type { Project } from '@/types'
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
@@ -28,30 +29,6 @@ interface ProjectPageProps {
   similar: Project[]
 }
 
-/* ─── Structured data ───────────────────────────────────────────────────── */
-
-function buildJsonLd(project: Project) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: project.name,
-    description: project.description.slice(0, 160),
-    image: project.images[0] ?? '',
-    offers: {
-      '@type': 'Offer',
-      price: project.price.basePrice,
-      priceCurrency: 'RUB',
-      availability: 'https://schema.org/InStock',
-    },
-    aggregateRating: project.rating
-      ? {
-          '@type': 'AggregateRating',
-          ratingValue: project.rating,
-          reviewCount: project.reviewCount ?? 0,
-        }
-      : undefined,
-  }
-}
 
 /* ─── Tech specs table ──────────────────────────────────────────────────── */
 
@@ -93,34 +70,39 @@ export default function ProjectPage({ project, similar }: ProjectPageProps) {
   const pageDesc  = project.metaDescription ??
     `${project.name}: ${project.characteristics.area} м², ${project.characteristics.floors} этаж, цена от ${formatPrice(project.price.basePrice)}. Гарантия 25 лет. Строительство за ${project.characteristics.buildingTime}.`
 
-  const jsonLd = buildJsonLd(project)
-
   const compareDisabled = !isInCompare && compareLen >= 4
 
-  return (
-    <Layout title={pageTitle} description={pageDesc} canonical={`/projects/${project.slug}`}>
-      {/* Open Graph / JSON-LD */}
-      <Head>
-        <meta property="og:title"       content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:type"        content="product" />
-        {project.images[0] && <meta property="og:image" content={project.images[0]} />}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </Head>
+  const jsonLdSchemas = [
+    generateProductSchema({
+      id:          project.id,
+      slug:        project.slug,
+      name:        project.name,
+      description: project.description,
+      images:      project.images,
+      price:       { basePrice: project.price.basePrice },
+      rating:      project.rating,
+      reviewCount: project.reviewCount,
+    }),
+    generateBreadcrumbSchema([
+      { label: 'Каталог', href: '/catalog' },
+      { label: project.name, href: `/projects/${project.slug}` },
+    ]),
+  ]
 
+  return (
+    <Layout
+      title={pageTitle}
+      description={pageDesc}
+      canonical={`/projects/${project.slug}`}
+      ogType="product"
+      ogImage={project.images[0]}
+      jsonLd={jsonLdSchemas}
+    >
       {/* ── Breadcrumb ── */}
-      <div className="bg-gray-50 border-b border-gray-200">
-        <div className="container mx-auto px-4 py-3 flex items-center gap-2 text-sm text-gray-500">
-          <Link href="/"        className="hover:text-[#1B5E20] transition-colors">Главная</Link>
-          <span>›</span>
-          <Link href="/catalog" className="hover:text-[#1B5E20] transition-colors">Каталог</Link>
-          <span>›</span>
-          <span className="text-gray-800 truncate">{project.name}</span>
-        </div>
-      </div>
+      <Breadcrumb items={[
+        { label: 'Каталог', href: '/catalog' },
+        { label: project.name, href: `/projects/${project.slug}` },
+      ]} />
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">
 
