@@ -8,6 +8,8 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { projectsRepo } from '../db/repository'
+import { generateQuotePDFServer, buildQuoteFilename } from '../lib/generate-quote-pdf-server'
+import type { QuoteData } from '../lib/generate-quote-pdf-server'
 
 const router = Router()
 
@@ -128,6 +130,54 @@ router.post('/', async (req: Request, res: Response) => {
       },
     },
   })
+})
+
+// ─── POST /api/calculator/generate-quote ──────────────────────────────────────
+// Generates a PDF smeta and returns it as a file download.
+// Used by the frontend "Скачать PDF смету" button (server-side path)
+// and by /api/contacts/quote for email attachments (Prompt 3).
+
+const quoteSchema = z.object({
+  projectId:       z.string().min(1),
+  projectName:     z.string().min(1),
+  projectArea:     z.number().positive(),
+  completionType:  z.enum(['without_finishing', 'with_finishing', 'turnkey']),
+  selectedOptions: z.array(z.enum(['delivery', 'foundation', 'utilities', 'insurance'])).default([]),
+  priceBreakdown: z.object({
+    materials:   z.number(),
+    labor:       z.number(),
+    overhead:    z.number(),
+    delivery:    z.number().optional(),
+    foundation:  z.number().optional(),
+    utilities:   z.number().optional(),
+    insurance:   z.number().optional(),
+  }),
+  totalPrice:     z.number().positive(),
+  monthlyPayment: z.number().positive(),
+  generatedAt:    z.coerce.date(),
+})
+
+router.post('/generate-quote', async (req: Request, res: Response) => {
+  let data: QuoteData
+  try {
+    data = quoteSchema.parse(req.body) as QuoteData
+  } catch (err) {
+    res.status(400).json({ error: 'Invalid request body', details: err })
+    return
+  }
+
+  try {
+    const pdfBuffer = await generateQuotePDFServer(data)
+    const filename  = buildQuoteFilename(data.projectName, data.generatedAt)
+
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+    res.setHeader('Content-Length', pdfBuffer.length)
+    res.send(pdfBuffer)
+  } catch (err) {
+    console.error('[calculator] generate-quote error:', err)
+    res.status(500).json({ error: 'PDF generation failed' })
+  }
 })
 
 export default router

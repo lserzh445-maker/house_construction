@@ -274,6 +274,7 @@ function buildSmetaHtml(data: CalculatorData): string {
  * @throws {Error} if called on the server or if generation fails
  */
 export async function generateQuotePDF(data: CalculatorData): Promise<void> {
+  console.log('generateQuotePDF -> data', data)
   if (typeof window === 'undefined') {
     throw new Error('generateQuotePDF must be called from a browser context')
   }
