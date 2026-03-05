@@ -8,6 +8,7 @@ import {
   quoteConfirmationEmail,
   managerNotificationEmail,
 } from '../integrations/email'
+import { generateQuotePDFServer } from '../lib/generate-quote-pdf-server'
 
 const router = Router()
 
@@ -29,6 +30,20 @@ const quoteSchema = baseContactSchema.extend({
   email: z.string().email('Некорректный email'),
   project: z.string().min(1, 'Выберите проект'),
   configuration: z.enum(['without-finishing', 'with-finishing', 'turnkey']),
+  // Optional calculator data — present when user submits form from the calculator page
+  projectArea:    z.number().optional(),
+  totalPrice:     z.number().optional(),
+  monthlyPayment: z.number().optional(),
+  priceBreakdown: z.object({
+    materials:  z.number(),
+    labor:      z.number(),
+    overhead:   z.number(),
+    delivery:   z.number().optional(),
+    foundation: z.number().optional(),
+    utilities:  z.number().optional(),
+    insurance:  z.number().optional(),
+  }).optional(),
+  selectedOptions: z.array(z.string()).optional(),
 })
 
 const consultationSchema = baseContactSchema.extend({
@@ -90,21 +105,49 @@ router.post('/call', async (req: Request, res: Response) => {
   }
 })
 
+// Maps contacts form configuration values → calculator completionType
+const CONFIG_TO_COMPLETION: Record<string, 'base' | 'finishing' | 'turnkey'> = {
+  'without-finishing': 'base',
+  'with-finishing':    'finishing',
+  'turnkey':           'turnkey',
+}
+
+const CONFIG_LABELS: Record<string, string> = {
+  'without-finishing': 'Без отделки',
+  'with-finishing':    'С отделкой',
+  'turnkey':           'Под ключ',
+}
+
 // POST /api/contacts/quote
 router.post('/quote', async (req: Request, res: Response) => {
   try {
     const data = quoteSchema.parse(req.body)
     const lead = saveLead('quote', data)
 
-    const configLabels: Record<string, string> = {
-      'without-finishing': 'Без отделки',
-      'with-finishing': 'С отделкой',
-      turnkey: 'Под ключ',
+    // Optionally generate PDF if calculator data was sent with the form
+    let pdfBuffer: Buffer | undefined
+    if (data.priceBreakdown && data.totalPrice) {
+      try {
+        pdfBuffer = await generateQuotePDFServer({
+          projectId:       data.project,
+          projectName:     data.project,
+          projectArea:     data.projectArea ?? 0,
+          completionType:  CONFIG_TO_COMPLETION[data.configuration] ?? 'base',
+          selectedOptions: data.selectedOptions ?? [],
+          priceBreakdown:  data.priceBreakdown,
+          totalPrice:      data.totalPrice,
+          monthlyPayment:  data.monthlyPayment ?? 0,
+          generatedAt:     new Date(),
+        })
+        console.log('[Contacts] ✅ PDF generated, size:', pdfBuffer.length, 'bytes')
+      } catch (pdfErr) {
+        console.error('[Contacts] ⚠️ PDF generation failed (email will be sent without attachment):', pdfErr)
+      }
     }
 
-    // Send confirmation email to client (no PDF — PDF is generated client-side)
+    // Send confirmation email to client (with PDF attachment if generated)
     sendEmail(
-      quoteConfirmationEmail(data.name, data.email, data.project, lead.id),
+      quoteConfirmationEmail(data.name, data.email, data.project, lead.id, pdfBuffer),
     ).catch((err) => console.error('[Email] quote confirmation failed:', err))
 
     // Notify manager
@@ -117,9 +160,10 @@ router.post('/quote', async (req: Request, res: Response) => {
           data.name,
           data.phone,
           {
-            Email: data.email,
-            Проект: data.project,
-            Комплектация: configLabels[data.configuration] || data.configuration,
+            Email:        data.email,
+            Проект:       data.project,
+            Комплектация: CONFIG_LABELS[data.configuration] || data.configuration,
+            ...(data.totalPrice ? { Сумма: String(data.totalPrice) + ' ₽' } : {}),
           },
         ),
       ).catch((err) => console.error('[Email] manager notification failed:', err))
@@ -127,7 +171,9 @@ router.post('/quote', async (req: Request, res: Response) => {
 
     res.status(201).json({
       data: { id: lead.id },
-      message: 'Запрос на расчёт принят. Письмо с подтверждением отправлено на ваш email.',
+      message: pdfBuffer
+        ? 'Запрос принят. Смета отправлена на ваш email.'
+        : 'Запрос на расчёт принят. Письмо с подтверждением отправлено на ваш email.',
     })
   } catch (error) {
     console.error('[Contacts/quote] Error:', error)
