@@ -1,8 +1,20 @@
+export interface ProjectReview {
+  id: string
+  author: string
+  rating: number
+  text: string
+  date: string
+  videoUrl?: string
+  helpful?: number
+  avatar?: string
+}
+
 export interface Project {
   id: string
   name: string
   slug: string
   description: string
+  metaDescription?: string
   price: {
     basePrice: number
     withFinishing: number
@@ -30,6 +42,8 @@ export interface Project {
   isPopular?: boolean
   isNew?: boolean
   createdAt?: string
+  reviews?: ProjectReview[]
+  tags?: string[]
 }
 
 export interface Review {

@@ -45,10 +45,11 @@ const STYLE_MAP: Record<string, Project['style']> = {
 
 function toProject(p: ProjectJson): Project {
   return {
-    id:          p.id,
-    slug:        p.slug,
-    name:        p.name,
-    description: p.description,
+    id:              p.id,
+    slug:            p.slug,
+    name:            p.name,
+    description:     p.description,
+    metaDescription: p.metaDescription,
     price: {
       basePrice:     p.price.base,
       withFinishing: p.price.with_finishing,
@@ -75,7 +76,38 @@ function toProject(p: ProjectJson): Project {
     reviewCount: p.reviewCount,
     isPopular:   p.isPopular,
     isNew:       p.isNew,
+    tags:        p.tags,
+    reviews:     p.reviews,
   }
+}
+
+/* ─── Single project helpers ─────────────────────────────────────────────── */
+
+export function getProjectById(id: string): Project | null {
+  const raw = rawProjects.find((p) => p.id === id || p.slug === id)
+  return raw ? toProject(raw) : null
+}
+
+export function getSimilarProjects(id: string, limit = 4): Project[] {
+  const current = rawProjects.find((p) => p.id === id || p.slug === id)
+  if (!current) return []
+
+  const currentStyle = STYLE_MAP[current.style] ?? 'modern'
+  const all = rawProjects.map(toProject)
+  const scored = all
+    .filter((p) => p.id !== current.id && p.slug !== current.slug)
+    .map((p) => {
+      let score = 0
+      if (p.style === currentStyle) score += 3
+      if (p.category === (current.category as Project['category'])) score += 2
+      const areaDiff = Math.abs(p.characteristics.area - current.area)
+      if (areaDiff <= 20)       score += 2
+      else if (areaDiff <= 40)  score += 1
+      return { project: p, score }
+    })
+    .sort((a, b) => b.score - a.score)
+
+  return scored.slice(0, limit).map((s) => s.project)
 }
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */

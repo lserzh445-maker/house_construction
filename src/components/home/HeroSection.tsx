@@ -52,7 +52,7 @@ export default function HeroSection({ title, subtitle }: HeroSectionProps) {
           <div className="max-w-3xl mx-auto">
 
             {/* Badge */}
-            <motion.div {...fadeIn} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
+            <motion.div variants={fadeIn} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
               <Badge variant="ghost" className="text-sm px-5 py-2 mb-6">
                 🏠 Строим каркасные дома с 2007 года
               </Badge>
