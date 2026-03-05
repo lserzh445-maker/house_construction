@@ -26,7 +26,6 @@ import FormModal        from '@/components/modals/FormModal'
 import {
   generateQuotePDF,
   type CalculatorData,
-  type CompletionType,
 } from '@/lib/generate-quote-pdf'
 import type { Project } from '@/types'
 
@@ -188,18 +187,11 @@ export default function Calculator({ initialProjectId, className }: CalculatorPr
     if (pdfLoading) return
     setPdfLoading(true)
 
-    // Map calculator completion key → CalculatorData CompletionType
-    const completionTypeMap: Record<typeof completion, CompletionType> = {
-      base:      'without_finishing',
-      finishing: 'with_finishing',
-      turnkey:   'turnkey',
-    }
-
     const data: CalculatorData = {
       projectId,
       projectName:     project.name,
       projectArea:     project.characteristics.area,
-      completionType:  completionTypeMap[completion],
+      completionType:  completion,
       selectedOptions: Array.from(options),
       priceBreakdown: {
         materials: calc.materials,
