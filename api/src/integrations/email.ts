@@ -32,12 +32,30 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     console.log('[Email] STUB — would send email:', {
       to: options.to,
       subject: options.subject,
+      attachments: options.attachments?.map((a) => a.filename),
     })
     return
   }
 
-  // TODO: replace with real SendGrid / SES / Nodemailer call
-  console.log('[Email] Sending to:', options.to, '|', options.subject)
+  const sgMail = (await import('@sendgrid/mail')).default
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+  await sgMail.send({
+    from: process.env.EMAIL_FROM ?? 'info@domstroy.ru',
+    to: options.to,
+    subject: options.subject,
+    html: options.html,
+    attachments: options.attachments?.map((att) => ({
+      filename: att.filename,
+      content: Buffer.isBuffer(att.content)
+        ? att.content.toString('base64')
+        : att.content,
+      type: 'application/pdf',
+      disposition: 'attachment',
+    })),
+  })
+
+  console.log('[Email] ✅ Sent to:', options.to, '|', options.subject)
 }
 
 // ─── Email templates ──────────────────────────────────────────────────────────
@@ -57,26 +75,33 @@ export function callConfirmationEmail(name: string, leadId: string): EmailOption
   }
 }
 
-/** Sent to client after a quote request (with PDF attachment placeholder) */
+/** Sent to client after a quote request — optionally attaches a PDF smeta */
 export function quoteConfirmationEmail(
   name: string,
   email: string,
   projectName: string,
   leadId: string,
+  pdfBuffer?: Buffer,
 ): EmailOptions {
+  const hasPdf = !!pdfBuffer
   return {
     to: email,
     subject: `Расчёт стоимости дома «${projectName}» — ДомСтрой`,
     html: `
       <h2>Здравствуйте, ${name}!</h2>
       <p>Спасибо за интерес к проекту <strong>${projectName}</strong>.</p>
-      <p>К письму прикреплена предварительная смета (PDF). Наш менеджер свяжется с вами в течение 2 часов для уточнения деталей.</p>
+      <p>${hasPdf
+        ? 'К этому письму прикреплена <strong>предварительная смета</strong> в формате PDF.'
+        : 'Предварительная смета будет подготовлена вскоре.'
+      } Наш менеджер свяжется с вами в течение 2 часов для уточнения деталей.</p>
       <p>Номер заявки: <strong>${leadId}</strong></p>
+      <p>Контакты: <a href="tel:+74991234567">+7 (499) 123-45-67</a> · <a href="mailto:info@domstroy.ru">info@domstroy.ru</a></p>
       <hr/>
       <p style="color:#888;font-size:12px">ДомСтрой — каркасные дома под ключ | <a href="https://domstroy.ru">domstroy.ru</a></p>
     `,
-    // In real implementation: attach generated PDF
-    // attachments: [{ filename: `estimate-${leadId}.pdf`, content: pdfBuffer }],
+    ...(hasPdf && {
+      attachments: [{ filename: `smeta_${leadId}.pdf`, content: pdfBuffer! }],
+    }),
   }
 }
 

@@ -2,6 +2,9 @@ import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { v4 as uuidv4 } from 'uuid'
 import type { ContactLead } from '../types'
+import { sendEmail, quoteConfirmationEmail, managerNotificationEmail } from '../integrations/email'
+import { generateQuotePDFServer, buildQuoteFilename } from '../lib/generate-quote-pdf-server'
+import type { QuoteData, CompletionType } from '../lib/generate-quote-pdf-server'
 
 const router = Router()
 
@@ -18,10 +21,35 @@ const callSchema = baseContactSchema.extend({
   project: z.string().optional(),
 })
 
+// Kebab-case values from the frontend form
+const CONFIG_KEBAB = ['without-finishing', 'with-finishing', 'turnkey'] as const
+
+// Map frontend kebab values → QuoteData CompletionType (underscore)
+const configToCompletion: Record<string, CompletionType> = {
+  'without-finishing': 'without_finishing',
+  'with-finishing':    'with_finishing',
+  'turnkey':           'turnkey',
+}
+
 const quoteSchema = baseContactSchema.extend({
-  email: z.string().email('Некорректный email'),
-  project: z.string().min(1, 'Выберите проект'),
-  configuration: z.enum(['without-finishing', 'with-finishing', 'turnkey']),
+  email:         z.string().email('Некорректный email'),
+  project:       z.string().min(1, 'Выберите проект'),
+  configuration: z.enum(CONFIG_KEBAB),
+  // Optional fields from the calculator — enables PDF attachment when present
+  projectName:    z.string().optional(),
+  projectArea:    z.number().optional(),
+  priceBreakdown: z.object({
+    materials:   z.number(),
+    labor:       z.number(),
+    overhead:    z.number(),
+    delivery:    z.number().optional(),
+    foundation:  z.number().optional(),
+    utilities:   z.number().optional(),
+    insurance:   z.number().optional(),
+  }).optional(),
+  totalPrice:     z.number().optional(),
+  monthlyPayment: z.number().optional(),
+  selectedOptions: z.array(z.string()).optional(),
 })
 
 const consultationSchema = baseContactSchema.extend({
@@ -64,11 +92,76 @@ router.post('/call', (req: Request, res: Response) => {
 })
 
 // POST /api/contacts/quote
-router.post('/quote', (req: Request, res: Response) => {
-  const data = quoteSchema.parse(req.body)
+router.post('/quote', async (req: Request, res: Response) => {
+  let data: z.infer<typeof quoteSchema>
+  try {
+    data = quoteSchema.parse(req.body)
+  } catch (err) {
+    res.status(400).json({ error: 'Invalid request body', details: err })
+    return
+  }
+
   const lead = saveLead('quote', data)
-  // TODO: generate PDF estimate, send to client email
-  res.status(201).json({ data: { id: lead.id }, message: 'Запрос на расчёт принят. Смета будет отправлена на email.' })
+
+  // ── PDF generation (only when calculator data is included) ──
+  let pdfBuffer: Buffer | undefined
+  const canGeneratePdf = !!(data.projectName && data.totalPrice && data.priceBreakdown)
+
+  if (canGeneratePdf) {
+    try {
+      const quoteData: QuoteData = {
+        projectId:       data.project,
+        projectName:     data.projectName!,
+        projectArea:     data.projectArea ?? 0,
+        completionType:  configToCompletion[data.configuration],
+        selectedOptions: (data.selectedOptions ?? []) as QuoteData['selectedOptions'],
+        priceBreakdown:  data.priceBreakdown!,
+        totalPrice:      data.totalPrice!,
+        monthlyPayment:  data.monthlyPayment ?? 0,
+        generatedAt:     new Date(),
+      }
+      console.log('[Contacts] Generating PDF for lead:', lead.id)
+      pdfBuffer = await generateQuotePDFServer(quoteData)
+      console.log('[Contacts] ✅ PDF generated, bytes:', pdfBuffer.length)
+    } catch (pdfErr) {
+      // Non-fatal — send email without attachment rather than failing the request
+      console.error('[Contacts] ⚠️ PDF generation failed:', pdfErr)
+    }
+  }
+
+  // ── Email to client ──
+  try {
+    const clientMail = quoteConfirmationEmail(
+      data.name,
+      data.email,
+      data.projectName ?? data.project,
+      lead.id,
+      pdfBuffer,
+    )
+    await sendEmail(clientMail)
+  } catch (emailErr) {
+    console.error('[Contacts] ⚠️ Client email failed:', emailErr)
+  }
+
+  // ── Manager notification ──
+  if (process.env.MANAGER_EMAIL) {
+    try {
+      await sendEmail(managerNotificationEmail(
+        process.env.MANAGER_EMAIL,
+        lead.id,
+        'quote',
+        data.name,
+        data.phone,
+      ))
+    } catch (emailErr) {
+      console.error('[Contacts] ⚠️ Manager notification failed:', emailErr)
+    }
+  }
+
+  res.status(201).json({
+    data: { id: lead.id },
+    message: 'Запрос на расчёт принят. Смета будет отправлена на email.',
+  })
 })
 
 // POST /api/contacts/consultation
