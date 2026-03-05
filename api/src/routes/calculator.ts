@@ -8,6 +8,7 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { projectsRepo } from '../db/repository'
+import { generateQuotePDFServer, CalculatorData } from '../lib/generate-quote-pdf-server'
 
 const router = Router()
 
@@ -128,6 +129,53 @@ router.post('/', async (req: Request, res: Response) => {
       },
     },
   })
+})
+
+// ─── Zod schema for CalculatorData (frontend format, camelCase) ───────────────
+
+const quoteSchema = z.object({
+  projectId:      z.string().default(''),
+  projectName:    z.string().min(1),
+  projectArea:    z.number().positive(),
+  completionType: z.enum(['base', 'finishing', 'turnkey']),
+  selectedOptions: z.array(z.string()).default([]),
+  priceBreakdown: z.object({
+    materials:  z.number(),
+    labor:      z.number(),
+    overhead:   z.number(),
+    delivery:   z.number().optional(),
+    foundation: z.number().optional(),
+    utilities:  z.number().optional(),
+    insurance:  z.number().optional(),
+  }),
+  totalPrice:     z.number().positive(),
+  monthlyPayment: z.number().positive(),
+  generatedAt:    z.string().or(z.date()).default(() => new Date().toISOString()),
+})
+
+// ─── POST /api/calculator/generate-quote ─────────────────────────────────────
+// Accepts the frontend CalculatorData (camelCase) and returns a PDF file.
+
+router.post('/generate-quote', async (req: Request, res: Response) => {
+  try {
+    const body = quoteSchema.parse(req.body)
+    const data: CalculatorData = { ...body, generatedAt: new Date(body.generatedAt as string) }
+
+    const pdfBuffer = await generateQuotePDFServer(data)
+
+    const safeName = data.projectName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_А-яЁё-]/g, '')
+    const dateStr  = new Date().toISOString().split('T')[0]
+
+    res.set({
+      'Content-Type':        'application/pdf',
+      'Content-Disposition': `attachment; filename="smeta_${safeName}_${dateStr}.pdf"`,
+      'Content-Length':      String(pdfBuffer.length),
+    })
+    res.send(pdfBuffer)
+  } catch (error) {
+    console.error('[Calculator/generate-quote] Error:', error)
+    res.status(400).json({ error: error instanceof Error ? error.message : 'Invalid request' })
+  }
 })
 
 export default router
