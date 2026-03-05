@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { Calculator, Download, Phone } from 'lucide-react'
+import React, { useState } from 'react'
+import { Calculator, Download, Phone, Loader2 } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import CallForm from '@/components/forms/CallForm'
 import { formatPrice } from '@/utils/formatPrice'
+import type { CalculatorData } from '@/lib/generate-quote-pdf'
 
 const PROJECTS_LIST = [
   { id: 'fin-d5', name: 'Финский дом Д-5', area: 85, basePrice: 8160000 },
@@ -47,6 +48,8 @@ export default function CalculatorPage() {
   const total = baseTotal + optionsTotal
   const monthlyPayment = Math.round(total / 240) // ~20 years
 
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+
   const toggleOption = (id: string) => {
     setSelectedOptions((prev) => {
       const next = new Set(prev)
@@ -54,6 +57,45 @@ export default function CalculatorPage() {
       else next.add(id)
       return next
     })
+  }
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      const { generateQuotePDF } = await import('@/lib/generate-quote-pdf')
+
+      const materialsShare = 0.45
+      const laborShare = 0.35
+      const overheadShare = 0.20
+      const materials = Math.round(baseTotal * materialsShare)
+      const labor = Math.round(baseTotal * laborShare)
+      const overhead = Math.round(baseTotal * overheadShare)
+
+      const breakdown: CalculatorData['priceBreakdown'] = { materials, labor, overhead }
+      if (selectedOptions.has('delivery')) breakdown.delivery = 50000
+      if (selectedOptions.has('foundation')) breakdown.foundation = 100000
+      if (selectedOptions.has('utilities')) breakdown.utilities = 80000
+      if (selectedOptions.has('insurance')) breakdown.insurance = Math.round(baseTotal * 0.03)
+
+      const quoteData: CalculatorData = {
+        projectId: selectedProject,
+        projectName: isCustom ? `Свой проект (${customArea} м²)` : project.name,
+        projectArea: area,
+        completionType: configuration,
+        selectedOptions: Array.from(selectedOptions),
+        priceBreakdown: breakdown,
+        totalPrice: total,
+        monthlyPayment,
+        generatedAt: new Date(),
+      }
+
+      await generateQuotePDF(quoteData)
+    } catch (err) {
+      console.error('PDF generation error:', err)
+      alert('Не удалось сгенерировать PDF. Попробуйте ещё раз.')
+    } finally {
+      setIsGeneratingPDF(false)
+    }
   }
 
   return (
@@ -224,9 +266,22 @@ export default function CalculatorPage() {
                       <Phone size={18} />
                       Узнать точную цену
                     </button>
-                    <button className="btn-outline w-full text-sm">
-                      <Download size={16} />
-                      Скачать смету (PDF)
+                    <button
+                      onClick={handleDownloadPDF}
+                      disabled={isGeneratingPDF}
+                      className="btn-outline w-full text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isGeneratingPDF ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          Генерирую...
+                        </>
+                      ) : (
+                        <>
+                          <Download size={16} />
+                          Скачать смету (PDF)
+                        </>
+                      )}
                     </button>
                   </div>
                 ) : (

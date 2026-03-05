@@ -2,10 +2,16 @@ import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { v4 as uuidv4 } from 'uuid'
 import type { ContactLead } from '../types'
+import {
+  sendEmail,
+  callConfirmationEmail,
+  quoteConfirmationEmail,
+  managerNotificationEmail,
+} from '../integrations/email'
 
 const router = Router()
 
-// In-memory store — replace with database
+// In-memory store — replace with database in production
 const leads: ContactLead[] = []
 
 const baseContactSchema = z.object({
@@ -15,6 +21,7 @@ const baseContactSchema = z.object({
 })
 
 const callSchema = baseContactSchema.extend({
+  email: z.string().email().optional().or(z.literal('')),
   project: z.string().optional(),
 })
 
@@ -56,35 +63,134 @@ function saveLead(type: ContactLead['type'], data: Record<string, unknown>): Con
 }
 
 // POST /api/contacts/call
-router.post('/call', (req: Request, res: Response) => {
-  const data = callSchema.parse(req.body)
-  const lead = saveLead('call', data)
-  // TODO: send to Bitrix24, notify manager via email/telegram
-  res.status(201).json({ data: { id: lead.id }, message: 'Заявка принята. Мы позвоним в течение 30 минут.' })
+router.post('/call', async (req: Request, res: Response) => {
+  try {
+    const data = callSchema.parse(req.body)
+    const lead = saveLead('call', data)
+
+    if (data.email) {
+      sendEmail(callConfirmationEmail(data.name, data.email, lead.id)).catch((err) =>
+        console.error('[Email] call confirmation failed:', err),
+      )
+    }
+
+    if (process.env.MANAGER_EMAIL) {
+      sendEmail(
+        managerNotificationEmail(process.env.MANAGER_EMAIL, lead.id, 'Звонок', data.name, data.phone),
+      ).catch((err) => console.error('[Email] manager notification failed:', err))
+    }
+
+    res.status(201).json({
+      data: { id: lead.id },
+      message: 'Заявка принята. Мы позвоним в течение 30 минут.',
+    })
+  } catch (error) {
+    console.error('[Contacts/call] Error:', error)
+    res.status(400).json({ error: error instanceof Error ? error.message : 'Invalid request' })
+  }
 })
 
 // POST /api/contacts/quote
-router.post('/quote', (req: Request, res: Response) => {
-  const data = quoteSchema.parse(req.body)
-  const lead = saveLead('quote', data)
-  // TODO: generate PDF estimate, send to client email
-  res.status(201).json({ data: { id: lead.id }, message: 'Запрос на расчёт принят. Смета будет отправлена на email.' })
+router.post('/quote', async (req: Request, res: Response) => {
+  try {
+    const data = quoteSchema.parse(req.body)
+    const lead = saveLead('quote', data)
+
+    const configLabels: Record<string, string> = {
+      'without-finishing': 'Без отделки',
+      'with-finishing': 'С отделкой',
+      turnkey: 'Под ключ',
+    }
+
+    // Send confirmation email to client (no PDF — PDF is generated client-side)
+    sendEmail(
+      quoteConfirmationEmail(data.name, data.email, data.project, lead.id),
+    ).catch((err) => console.error('[Email] quote confirmation failed:', err))
+
+    // Notify manager
+    if (process.env.MANAGER_EMAIL) {
+      sendEmail(
+        managerNotificationEmail(
+          process.env.MANAGER_EMAIL,
+          lead.id,
+          'Расчёт стоимости',
+          data.name,
+          data.phone,
+          {
+            Email: data.email,
+            Проект: data.project,
+            Комплектация: configLabels[data.configuration] || data.configuration,
+          },
+        ),
+      ).catch((err) => console.error('[Email] manager notification failed:', err))
+    }
+
+    res.status(201).json({
+      data: { id: lead.id },
+      message: 'Запрос на расчёт принят. Письмо с подтверждением отправлено на ваш email.',
+    })
+  } catch (error) {
+    console.error('[Contacts/quote] Error:', error)
+    res.status(400).json({ error: error instanceof Error ? error.message : 'Invalid request' })
+  }
 })
 
 // POST /api/contacts/consultation
-router.post('/consultation', (req: Request, res: Response) => {
-  const data = consultationSchema.parse(req.body)
-  const lead = saveLead('consultation', data)
-  // TODO: create calendar event, send confirmation email/SMS
-  res.status(201).json({ data: { id: lead.id }, message: 'Консультация записана. Ждём вас!' })
+router.post('/consultation', async (req: Request, res: Response) => {
+  try {
+    const data = consultationSchema.parse(req.body)
+    const lead = saveLead('consultation', data)
+
+    if (process.env.MANAGER_EMAIL) {
+      sendEmail(
+        managerNotificationEmail(
+          process.env.MANAGER_EMAIL,
+          lead.id,
+          'Консультация',
+          data.name,
+          data.phone,
+          { Дата: data.date, Место: data.place === 'office' ? 'Офис' : 'Выставка' },
+        ),
+      ).catch((err) => console.error('[Email] manager notification failed:', err))
+    }
+
+    res.status(201).json({
+      data: { id: lead.id },
+      message: 'Консультация записана. Ждём вас!',
+    })
+  } catch (error) {
+    console.error('[Contacts/consultation] Error:', error)
+    res.status(400).json({ error: error instanceof Error ? error.message : 'Invalid request' })
+  }
 })
 
 // POST /api/contacts/custom-project
-router.post('/custom-project', (req: Request, res: Response) => {
-  const data = customProjectSchema.parse(req.body)
-  const lead = saveLead('custom-project', data)
-  // TODO: assign senior architect, send VIP notification
-  res.status(201).json({ data: { id: lead.id }, message: 'Заявка на индивидуальный проект принята. Архитектор свяжется в течение 2 часов.' })
+router.post('/custom-project', async (req: Request, res: Response) => {
+  try {
+    const data = customProjectSchema.parse(req.body)
+    const lead = saveLead('custom-project', data)
+
+    if (process.env.MANAGER_EMAIL) {
+      sendEmail(
+        managerNotificationEmail(
+          process.env.MANAGER_EMAIL,
+          lead.id,
+          'Индивидуальный проект (VIP)',
+          data.name,
+          data.phone,
+          { Email: data.email },
+        ),
+      ).catch((err) => console.error('[Email] manager notification failed:', err))
+    }
+
+    res.status(201).json({
+      data: { id: lead.id },
+      message: 'Заявка на индивидуальный проект принята. Архитектор свяжется в течение 2 часов.',
+    })
+  } catch (error) {
+    console.error('[Contacts/custom-project] Error:', error)
+    res.status(400).json({ error: error instanceof Error ? error.message : 'Invalid request' })
+  }
 })
 
 export default router
