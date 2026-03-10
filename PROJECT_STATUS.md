@@ -108,16 +108,11 @@
 - **Fix 2**: `projectId={project ? projectId : undefined}` — FormModal получает только валидный ID
 
 ---
-
-## 🔄 В ПРОЦЕССЕ:
-SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt
+## ✅ Шаг 10 SEO: meta-теги, Schema.org JSON-LD, sitemap.xml, robots.txt - завершен
 ---
 
-## ⏭️ Следующие шаги
-
-| Шаг | Описание | Статус |
-|-----|----------|--------|
-| 11 | CI/CD: GitHub Actions (lint + build + deploy) | ⏳ |
+## 🔄 В ПРОЦЕССЕ:
+шаг 11 | CI/CD: GitHub Actions (lint + build + deploy)
 
 ---
 
