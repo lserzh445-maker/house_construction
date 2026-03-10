@@ -29,7 +29,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Двухэтажный каркасный дом в финском стиле.',
     price: { basePrice: 8160000, withFinishing: 9792000, turnkey: 11448000 },
     characteristics: { area: 85, size: '7×8', floors: 2, bedrooms: 2, bathrooms: 1, material: 'Брус 150×100', insulation: 'Минвата 150мм', roofing: 'Металлочерепица', buildingTime: '4–6 недель' },
-    images: ['/images/projects/fin-d5.jpg'], floorPlans: [], category: 'finnish', style: 'finnish',
+    images: ['https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop'], floorPlans: [], category: 'finnish', style: 'finnish',
     features: ['terrace'], rating: 4.9, reviewCount: 28, isPopular: true,
   },
   {
@@ -37,7 +37,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Одноэтажный дом с открытой планировкой.',
     price: { basePrice: 5400000, withFinishing: 6480000, turnkey: 7560000 },
     characteristics: { area: 65, size: '8×9', floors: 1, bedrooms: 2, bathrooms: 1, material: 'Брус 150×50', insulation: 'Эковата 200мм', roofing: 'Мягкая черепица', buildingTime: '3–4 недели' },
-    images: ['/images/projects/modern-m1.jpg'], floorPlans: [], category: 'one-story', style: 'modern',
+    images: ['https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop'], floorPlans: [], category: 'one-story', style: 'modern',
     features: ['terrace', 'balcony'], rating: 4.8, reviewCount: 14, isNew: true,
   },
   {
@@ -45,7 +45,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Стильный барнхаус с мансардой и большими окнами.',
     price: { basePrice: 9800000, withFinishing: 11760000, turnkey: 13720000 },
     characteristics: { area: 120, size: '10×12', floors: 2, bedrooms: 3, bathrooms: 2, material: 'Брус 200×100', insulation: 'Минвата 200мм', roofing: 'Металлочерепица', buildingTime: '6–8 недель' },
-    images: ['/images/projects/barn-b3.jpg'], floorPlans: [], category: 'with-mansard', style: 'barnhouse',
+    images: ['https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=800&h=600&fit=crop'], floorPlans: [], category: 'with-mansard', style: 'barnhouse',
     features: ['terrace', 'sauna'], rating: 4.7, reviewCount: 9,
   },
   {
@@ -53,7 +53,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Практичный и тёплый дом по канадской технологии.',
     price: { basePrice: 6900000, withFinishing: 8280000, turnkey: 9660000 },
     characteristics: { area: 95, size: '9×11', floors: 2, bedrooms: 3, bathrooms: 1, material: 'SIP-панели', insulation: 'ПСБ 200мм', roofing: 'Металлочерепица', buildingTime: '3–5 недель' },
-    images: ['/images/projects/canadian-k2.jpg'], floorPlans: [], category: 'two-story', style: 'canadian',
+    images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop'], floorPlans: [], category: 'two-story', style: 'canadian',
     features: ['garage'], rating: 4.8, reviewCount: 19, isPopular: true,
   },
   {
@@ -61,7 +61,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Просторный коттедж для большой семьи.',
     price: { basePrice: 12500000, withFinishing: 15000000, turnkey: 17500000 },
     characteristics: { area: 180, size: '12×15', floors: 2, bedrooms: 4, bathrooms: 2, material: 'Брус 200×100', insulation: 'Минвата 200мм', roofing: 'Натуральная черепица', buildingTime: '8–10 недель' },
-    images: ['/images/projects/cottage-k5.jpg'], floorPlans: [], category: 'cottage', style: 'modern',
+    images: ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop'], floorPlans: [], category: 'cottage', style: 'modern',
     features: ['terrace', 'sauna', 'garage'], rating: 4.9, reviewCount: 7,
   },
   {
@@ -69,7 +69,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Уютный одноэтажный дом с экостилем.',
     price: { basePrice: 4200000, withFinishing: 5040000, turnkey: 5880000 },
     characteristics: { area: 55, size: '7×8', floors: 1, bedrooms: 2, bathrooms: 1, material: 'Брус 150×100', insulation: 'Эковата 150мм', roofing: 'Мягкая черепица', buildingTime: '3–4 недели' },
-    images: ['/images/projects/eco-e1.jpg'], floorPlans: [], category: 'one-story', style: 'finnish',
+    images: ['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'], floorPlans: [], category: 'one-story', style: 'finnish',
     features: ['terrace'], rating: 4.6, reviewCount: 12, isNew: true,
   },
 ]

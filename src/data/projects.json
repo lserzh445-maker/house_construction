@@ -23,8 +23,8 @@
     "roofing": "Металлочерепица",
     "features": [],
     "images": [
-      "/images/projects/eco-e1/1.webp",
-      "/images/projects/eco-e1/2.webp"
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1501876725168-00c445821c9e?w=800&h=600&fit=crop"
     ],
     "floorPlans": ["/plans/eco-e1-floor1.pdf"],
     "videoUrl": null,
@@ -74,8 +74,8 @@
     "roofing": "Металлочерепица",
     "features": [],
     "images": [
-      "/images/projects/eco-e2/1.webp",
-      "/images/projects/eco-e2/2.webp"
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&h=600&fit=crop"
     ],
     "floorPlans": ["/plans/eco-e2-floor1.pdf"],
     "videoUrl": null,
@@ -125,9 +125,9 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace"],
     "images": [
-      "/images/projects/fin-d3/1.webp",
-      "/images/projects/fin-d3/2.webp",
-      "/images/projects/fin-d3/3.webp"
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop"
     ],
     "floorPlans": ["/plans/fin-d3-floor1.pdf"],
     "videoUrl": null,
@@ -177,9 +177,9 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace", "balcony"],
     "images": [
-      "/images/projects/modern-s1/1.webp",
-      "/images/projects/modern-s1/2.webp",
-      "/images/projects/modern-s1/3.webp"
+      "https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop"
     ],
     "floorPlans": ["/plans/modern-s1-floor1.pdf"],
     "videoUrl": "https://www.youtube.com/embed/placeholder",
@@ -236,8 +236,8 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace"],
     "images": [
-      "/images/projects/canadian-k1/1.webp",
-      "/images/projects/canadian-k1/2.webp"
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/canadian-k1-floor1.pdf",
@@ -290,8 +290,8 @@
     "roofing": "Металлочерепица",
     "features": ["terrace"],
     "images": [
-      "/images/projects/barn-b1/1.webp",
-      "/images/projects/barn-b1/2.webp"
+      "https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/barn-b1-floor1.pdf",
@@ -344,10 +344,10 @@
     "roofing": "Металлочерепица",
     "features": ["terrace"],
     "images": [
-      "/images/projects/fin-d5/1.webp",
-      "/images/projects/fin-d5/2.webp",
-      "/images/projects/fin-d5/3.webp",
-      "/images/projects/fin-d5/4.webp"
+      "https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600529284490-4d71bcdd2100?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/fin-d5-floor1.pdf",
@@ -407,8 +407,8 @@
     "roofing": "Металлочерепица",
     "features": ["terrace"],
     "images": [
-      "/images/projects/modern-s3/1.webp",
-      "/images/projects/modern-s3/2.webp"
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/modern-s3-floor1.pdf",
@@ -461,9 +461,9 @@
     "roofing": "Металлочерепица",
     "features": ["terrace", "sauna"],
     "images": [
-      "/images/projects/mansard-m3/1.webp",
-      "/images/projects/mansard-m3/2.webp",
-      "/images/projects/mansard-m3/3.webp"
+      "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/mansard-m3-floor1.pdf",
@@ -516,9 +516,9 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace"],
     "images": [
-      "/images/projects/canadian-k2/1.webp",
-      "/images/projects/canadian-k2/2.webp",
-      "/images/projects/canadian-k2/3.webp"
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/canadian-k2-floor1.pdf",
@@ -578,10 +578,10 @@
     "roofing": "Металлочерепица",
     "features": ["terrace", "sauna"],
     "images": [
-      "/images/projects/barn-b2/1.webp",
-      "/images/projects/barn-b2/2.webp",
-      "/images/projects/barn-b2/3.webp",
-      "/images/projects/barn-b2/4.webp"
+      "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/barn-b2-floor1.pdf",
@@ -641,9 +641,9 @@
     "roofing": "Металлочерепица",
     "features": ["terrace", "balcony"],
     "images": [
-      "/images/projects/fin-d8/1.webp",
-      "/images/projects/fin-d8/2.webp",
-      "/images/projects/fin-d8/3.webp"
+      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/fin-d8-floor1.pdf",
@@ -696,8 +696,8 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace", "balcony"],
     "images": [
-      "/images/projects/modern-s5/1.webp",
-      "/images/projects/modern-s5/2.webp"
+      "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/modern-s5-floor1.pdf",
@@ -750,9 +750,9 @@
     "roofing": "Металлочерепица",
     "features": ["terrace", "balcony"],
     "images": [
-      "/images/projects/family-f1/1.webp",
-      "/images/projects/family-f1/2.webp",
-      "/images/projects/family-f1/3.webp"
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/family-f1-floor1.webp",
@@ -805,8 +805,8 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace", "garage"],
     "images": [
-      "/images/projects/canadian-k5/1.webp",
-      "/images/projects/canadian-k5/2.webp"
+      "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/canadian-k5-floor1.pdf",
@@ -859,9 +859,9 @@
     "roofing": "Металлочерепица",
     "features": ["terrace", "sauna", "garage", "boiler-room"],
     "images": [
-      "/images/projects/barn-b4/1.webp",
-      "/images/projects/barn-b4/2.webp",
-      "/images/projects/barn-b4/3.webp"
+      "https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/barn-b4-floor1.pdf",
@@ -914,9 +914,9 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace", "balcony", "boiler-room"],
     "images": [
-      "/images/projects/lux-l1/1.webp",
-      "/images/projects/lux-l1/2.webp",
-      "/images/projects/lux-l1/3.webp"
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600529284490-4d71bcdd2100?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/lux-l1-floor1.pdf",
@@ -969,9 +969,9 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace", "garage", "balcony"],
     "images": [
-      "/images/projects/cottage-k7/1.webp",
-      "/images/projects/cottage-k7/2.webp",
-      "/images/projects/cottage-k7/3.webp"
+      "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1501876725168-00c445821c9e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/cottage-k7-floor1.pdf",

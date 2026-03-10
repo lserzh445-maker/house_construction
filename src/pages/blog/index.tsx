@@ -5,46 +5,8 @@ import Image from 'next/image'
 import { Clock, User, ArrowRight } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import { formatDate } from '@/utils/formatPrice'
+import { BLOG_POSTS } from '@/data/blog'
 import type { BlogPost } from '@/types'
-
-const MOCK_POSTS: BlogPost[] = [
-  {
-    id: '1', slug: 'kak-vybrat-karkasnyi-dom', title: 'Как выбрать каркасный дом: 10 критериев и ошибок',
-    excerpt: 'Разбираем главные параметры при выборе каркасного дома — от площади и планировки до выбора комплектации и материалов.',
-    content: '', image: '/images/blog/1.jpg', publishedAt: '2026-02-20',
-    author: 'Алексей Петров', category: 'Выбор дома', readTime: 8, tags: ['выбор', 'советы'],
-  },
-  {
-    id: '2', slug: 'karkas-vs-brus-vs-kamen', title: 'Каркас vs брус vs камень: полное сравнение',
-    excerpt: 'Сравниваем три самых популярных технологии строительства загородных домов по ключевым параметрам.',
-    content: '', image: '/images/blog/2.jpg', publishedAt: '2026-02-15',
-    author: 'Мария Иванова', category: 'Технологии', readTime: 12, tags: ['сравнение', 'технологии'],
-  },
-  {
-    id: '3', slug: 'ipoteka-na-karkasnyi-dom-2026', title: 'Ипотека на каркасный дом: условия 2026',
-    excerpt: 'Актуальные программы ипотечного кредитования для покупки каркасного дома. Ставки, требования, документы.',
-    content: '', image: '/images/blog/3.jpg', publishedAt: '2026-02-10',
-    author: 'Анна Смирнова', category: 'Финансирование', readTime: 6, tags: ['ипотека', 'финансирование'],
-  },
-  {
-    id: '4', slug: 'podgotovka-uchastka', title: 'Подготовка земельного участка: пошаговая инструкция',
-    excerpt: 'Что нужно сделать с участком перед началом строительства каркасного дома.',
-    content: '', image: '/images/blog/4.jpg', publishedAt: '2026-02-05',
-    author: 'Сергей Козлов', category: 'Строительство', readTime: 10, tags: ['участок', 'подготовка'],
-  },
-  {
-    id: '5', slug: 'otoplenie-v-karkasnomy-dome', title: 'Отопление в каркасном доме: выбираем систему',
-    excerpt: 'Газ, электро, тепловой насос или твердотопливный котёл — что лучше для каркасного дома.',
-    content: '', image: '/images/blog/5.jpg', publishedAt: '2026-01-28',
-    author: 'Алексей Петров', category: 'Инженерия', readTime: 9, tags: ['отопление', 'инженерия'],
-  },
-  {
-    id: '6', slug: 'sezonnost-stroitelstva', title: 'Сезонность в строительстве: когда лучше строить?',
-    excerpt: 'Можно ли строить каркасный дом зимой? Разбираем плюсы и минусы каждого сезона.',
-    content: '', image: '/images/blog/6.jpg', publishedAt: '2026-01-20',
-    author: 'Сергей Козлов', category: 'Строительство', readTime: 7, tags: ['сезонность', 'зима'],
-  },
-]
 
 const CATEGORIES = ['Все', 'Выбор дома', 'Технологии', 'Финансирование', 'Строительство', 'Инженерия']
 
@@ -150,6 +112,5 @@ export default function BlogPage({ posts }: BlogPageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps<BlogPageProps> = async () => {
-  // TODO: replace with real API: await blogApi.getAll()
-  return { props: { posts: MOCK_POSTS } }
+  return { props: { posts: BLOG_POSTS } }
 }

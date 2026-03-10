@@ -21,7 +21,11 @@ const MOCK_PORTFOLIO: PortfolioItem[] = Array.from({ length: 9 }, (_, i) => ({
   location: ['Московская обл.', 'Ленинградская обл.', 'Краснодарский край', 'Владимирская обл.', 'Тверская обл.'][i % 5],
   area: 65 + i * 10,
   completedAt: `${2024 - Math.floor(i / 3)}-${String(12 - (i % 12)).padStart(2, '0')}-01`,
-  image: `/images/portfolio/${(i % 3) + 1}.jpg`,
+  image: [
+    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop',
+  ][i % 3],
   category: ['Финские', 'Барнхаус', 'Современные', 'Одноэтажные', 'Двухэтажные'][i % 5],
 }))
 
