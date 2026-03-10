@@ -122,7 +122,7 @@
 - [ ] npm run build (фронтенд + бэкенд)
 - [ ] Результаты в GitHub Actions tab
 
-#### 11.2 ⏳ ESLint и Prettier конфиги
+#### 11.2 ✅ ESLint и Prettier конфиги - завершен
 - [ ] .eslintrc.json (фронтенд)
 - [ ] api/.eslintrc.json (бэкенд)
 - [ ] .prettierrc (фронтенд)
