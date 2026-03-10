@@ -19,7 +19,7 @@ const MOCK_REVIEWS: Review[] = Array.from({ length: 10 }, (_, i) => ({
     'Сначала сомневались, но результат превзошёл ожидания. Тёплый, тихий, уютный дом. Живём второй год — всё отлично.',
   ][i % 5],
   date: new Date(2025, 11 - (i % 6), 15 - i).toISOString().split('T')[0],
-  videoUrl: i < 2 ? 'https://www.youtube.com/embed/dQw4w9WgXcQ' : undefined,
+  ...(i < 2 ? { videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' } : {}),
   helpful: 5 + i * 3,
 }))
 
