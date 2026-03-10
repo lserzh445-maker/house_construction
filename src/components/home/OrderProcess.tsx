@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   BookOpen, MapPin, FileText, Layers,
@@ -169,9 +170,9 @@ export default function OrderProcess({ steps, className = '' }: OrderProcessProp
           <p className="text-neutral-medium text-sm mb-4">
             Среднее время строительства — <strong className="text-primary">4–6 недель</strong>
           </p>
-          <a href="/contacts" className="btn-primary">
+          <Link href="/contacts" className="btn-primary">
             Начать строительство
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>

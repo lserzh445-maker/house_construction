@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { SlidersHorizontal, X, Home, ChevronLeft, ChevronRight } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import ProductCard from '@/components/catalog/ProductCard'
@@ -130,7 +131,7 @@ export default function CatalogPage({ fallbackData }: CatalogPageProps) {
       <div className="bg-neutral-light border-b border-gray-200">
         <div className="container mx-auto px-4 py-3">
           <nav className="text-sm text-neutral-medium">
-            <a href="/" className="hover:text-primary transition-colors">Главная</a>
+            <Link href="/" className="hover:text-primary transition-colors">Главная</Link>
             <span className="mx-2">›</span>
             <span className="text-neutral-dark font-medium">Каталог</span>
           </nav>

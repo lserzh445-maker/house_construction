@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay, A11y } from 'swiper/modules'
@@ -243,9 +244,9 @@ export default function ReviewsCarousel({
 
         {/* Link */}
         <div className="text-center mt-6">
-          <a href="/reviews" className="btn-outline">
+          <Link href="/reviews" className="btn-outline">
             Читать все отзывы
-          </a>
+          </Link>
         </div>
       </div>
     </section>
