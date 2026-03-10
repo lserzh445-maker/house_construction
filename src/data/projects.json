@@ -344,8 +344,8 @@
     "roofing": "Металлочерепица",
     "features": ["terrace"],
     "images": [
-      "https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600529284490-4d71bcdd2100?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop",
       "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop",
       "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop"
     ],
@@ -516,9 +516,8 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace"],
     "images": [
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop"
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/canadian-k2-floor1.pdf",
@@ -805,8 +804,8 @@
     "roofing": "Мягкая черепица",
     "features": ["terrace", "garage"],
     "images": [
-      "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop"
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/canadian-k5-floor1.pdf",
@@ -915,8 +914,8 @@
     "features": ["terrace", "balcony", "boiler-room"],
     "images": [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600529284490-4d71bcdd2100?w=800&h=600&fit=crop"
+      "https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop"
     ],
     "floorPlans": [
       "/plans/lux-l1-floor1.pdf",

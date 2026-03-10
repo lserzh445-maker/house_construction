@@ -29,7 +29,7 @@ const DEFAULT_PROJECTS: Project[] = [
     description: 'Двухэтажный каркасный дом в финском стиле.',
     price: { basePrice: 8160000, withFinishing: 9792000, turnkey: 11448000 },
     characteristics: { area: 85, size: '7×8', floors: 2, bedrooms: 2, bathrooms: 1, material: 'Брус 150×100', insulation: 'Минвата 150мм', roofing: 'Металлочерепица', buildingTime: '4–6 недель' },
-    images: ['https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop'], floorPlans: [], category: 'finnish', style: 'finnish',
+    images: ['https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop'], floorPlans: [], category: 'finnish', style: 'finnish',
     features: ['terrace'], rating: 4.9, reviewCount: 28, isPopular: true,
   },
   {

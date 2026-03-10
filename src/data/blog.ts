@@ -68,7 +68,7 @@ export const BLOG_POSTS: BlogPost[] = [
 - Экологичность: брус > каркас ≈ камень
 
 **Вывод:** для быстрого строительства с ограниченным бюджетом — каркас. Для экологичного загородного дома — брус. Для максимальной долговечности и капитальности — камень.`,
-    image: 'https://images.unsplash.com/photo-1600210174918-92ae00ecf461?w=800&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop',
     publishedAt: '2026-02-15',
     author: 'Мария Иванова',
     category: 'Технологии',
@@ -110,7 +110,7 @@ export const BLOG_POSTS: BlogPost[] = [
 3. Оформите договор ипотеки
 4. Банк перечисляет деньги траншами по ходу строительства
 5. После ввода в эксплуатацию — оформление права собственности`,
-    image: 'https://images.unsplash.com/photo-1600529284490-4d71bcdd2100?w=800&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop',
     publishedAt: '2026-02-10',
     author: 'Анна Смирнова',
     category: 'Финансирование',
