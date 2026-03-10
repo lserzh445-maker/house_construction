@@ -112,13 +112,16 @@ export default function ContactsPage() {
               </a>
             </div>
 
-            {/* Map placeholder */}
-            <div className="mt-8 bg-neutral-light rounded-2xl aspect-video flex items-center justify-center text-neutral-medium">
-              <div className="text-center">
-                <MapPin size={32} className="mx-auto mb-2 text-primary" />
-                <p className="text-sm">Карта загружается...</p>
-                <p className="text-xs mt-1">{address}</p>
-              </div>
+            {/* Yandex Map */}
+            <div className="mt-8 rounded-2xl aspect-video overflow-hidden">
+              <iframe
+                src="https://yandex.ru/map-widget/v1/?ll=37.850586%2C55.763650&z=16&pt=37.850586%2C55.763650%2Cpm2lbm"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                allowFullScreen
+                title={`Карта: ${address}`}
+              />
             </div>
           </div>
 
