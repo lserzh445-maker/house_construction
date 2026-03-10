@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { GetServerSideProps } from 'next'
-import Image from 'next/image'
 import { MapPin, Home } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import CallForm from '@/components/forms/CallForm'
@@ -22,10 +21,12 @@ const MOCK_PORTFOLIO: PortfolioItem[] = Array.from({ length: 9 }, (_, i) => ({
   area: 65 + i * 10,
   completedAt: `${2024 - Math.floor(i / 3)}-${String(12 - (i % 12)).padStart(2, '0')}-01`,
   image: [
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=600&fit=crop',
     'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop',
-  ][i % 3],
+    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop',
+  ][i % 5],
   category: ['Финские', 'Барнхаус', 'Современные', 'Одноэтажные', 'Двухэтажные'][i % 5],
 }))
 
@@ -84,9 +85,12 @@ export default function PortfolioPage({ items }: PortfolioPageProps) {
               className="group card text-left"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-neutral-light">
-                <div className="absolute inset-0 flex items-center justify-center text-gray-200">
-                  <Home size={48} />
-                </div>
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                 <span className="absolute top-3 left-3 badge bg-primary text-white text-xs">
                   {item.category}
@@ -121,8 +125,12 @@ export default function PortfolioPage({ items }: PortfolioPageProps) {
               className="bg-white rounded-2xl max-w-lg w-full p-6"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="aspect-[4/3] bg-neutral-light rounded-xl mb-4 flex items-center justify-center">
-                <Home size={64} className="text-gray-300" />
+              <div className="aspect-[4/3] rounded-xl mb-4 overflow-hidden">
+                <img
+                  src={selected.image}
+                  alt={selected.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h3 className="font-heading font-semibold text-xl mb-2">{selected.title}</h3>
               <div className="flex gap-4 text-sm text-neutral-medium mb-4">

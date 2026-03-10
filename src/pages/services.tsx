@@ -1,12 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
-import { Pencil, Truck, Shield, Home, ArrowRight } from 'lucide-react'
+import { Pencil, Truck, Shield, ArrowRight } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import CallForm from '@/components/forms/CallForm'
 
 const SERVICES = [
   {
     icon: Pencil,
+    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=600&fit=crop',
     title: 'Индивидуальное проектирование',
     description: 'Разработаем проект дома любой сложности с нуля под ваши требования. Наши архитекторы учтут особенности участка, ваши предпочтения по планировке и бюджет.',
     items: ['Выезд архитектора на участок', 'Разработка проекта (2–4 недели)', 'Конструкторские расчёты', 'Проект инженерных систем', 'Визуализация в 3D'],
@@ -15,6 +16,7 @@ const SERVICES = [
   },
   {
     icon: Truck,
+    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=600&fit=crop',
     title: 'Доставка и монтаж',
     description: 'Доставляем и монтируем дома по всей России. Наша бригада выедет на объект в течение 2 недель после заключения договора.',
     items: ['Доставка материалов на участок', 'Монтаж каркаса и кровли', 'Установка окон и дверей', 'Внешняя и внутренняя отделка', 'Сдача под ключ с актом'],
@@ -23,6 +25,7 @@ const SERVICES = [
   },
   {
     icon: Shield,
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
     title: 'Контроль качества',
     description: 'На каждом этапе строительства работает технический надзор. Мы используем только сертифицированные материалы с паспортами качества.',
     items: ['Контроль качества материалов', 'Поэтапная приёмка работ', 'Фото и видеоотчёты с объекта', 'Гарантийный паспорт при сдаче', 'Гарантия 25 лет на конструктив'],
@@ -49,7 +52,7 @@ export default function ServicesPage() {
       </section>
 
       <div className="container mx-auto px-4 py-10 space-y-10">
-        {SERVICES.map(({ icon: Icon, title, description, items, href, cta }, idx) => (
+        {SERVICES.map(({ icon: Icon, image, title, description, items, href, cta }, idx) => (
           <div
             key={title}
             className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${idx % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
@@ -73,8 +76,13 @@ export default function ServicesPage() {
                 <ArrowRight size={18} />
               </Link>
             </div>
-            <div className={`bg-neutral-light rounded-2xl aspect-[4/3] flex items-center justify-center ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
-              <Icon size={80} className="text-primary-200" />
+            <div className={`rounded-2xl aspect-[4/3] overflow-hidden ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
+              <img
+                src={image}
+                alt={title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
             </div>
           </div>
         ))}
