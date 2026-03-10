@@ -59,11 +59,11 @@ router.get('/', async (req: Request, res: Response) => {
 // ─── GET /api/reviews/project/:project_id ─────────────────────────────────────
 
 router.get('/project/:project_id', async (req: Request, res: Response) => {
-  const q  = listSchema.parse({ ...req.query, project_id: req.params.project_id })
+  const q  = listSchema.parse({ ...req.query, project_id: String(req.params.project_id) })
   const { data, total, avgRating } = await reviewsRepo.findMany({
     page:       q.page,
     page_size:  q.page_size,
-    project_id: req.params.project_id,
+    project_id: String(req.params.project_id),
     sort:       q.sort,
   })
 

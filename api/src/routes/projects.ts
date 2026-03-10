@@ -63,7 +63,7 @@ router.get('/', async (req: Request, res: Response) => {
 // ─── GET /api/projects/:id ────────────────────────────────────────────────────
 
 router.get('/:id', async (req: Request, res: Response) => {
-  const project = await projectsRepo.findUnique(req.params.id)
+  const project = await projectsRepo.findUnique(String(req.params.id))
   if (!project) throw new AppError('Project not found', 404)
   res.json({ data: project })
 })
@@ -71,7 +71,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // ─── GET /api/projects/:id/similar ───────────────────────────────────────────
 
 router.get('/:id/similar', async (req: Request, res: Response) => {
-  const project = await projectsRepo.findUnique(req.params.id)
+  const project = await projectsRepo.findUnique(String(req.params.id))
   if (!project) throw new AppError('Project not found', 404)
 
   const similar = await projectsRepo.findSimilar(project, 4)

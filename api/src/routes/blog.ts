@@ -33,10 +33,12 @@ router.get('/', (req: Request, res: Response) => {
 
   const response: PaginatedResponse<BlogPost> = {
     data,
-    total,
-    page,
-    pageSize,
-    totalPages: Math.ceil(total / pageSize),
+    meta: {
+      total,
+      page,
+      page_size:   pageSize,
+      total_pages: Math.ceil(total / pageSize),
+    },
   }
 
   res.json(response)

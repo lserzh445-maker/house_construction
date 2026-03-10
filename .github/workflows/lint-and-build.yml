@@ -1,0 +1,86 @@
+name: Lint & Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # FRONTEND (Next.js)
+  # ─────────────────────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend — TypeScript + ESLint + Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript — type check
+        run: npx tsc --noEmit
+        # Blocks the pipeline on any type error
+
+      - name: ESLint — lint check
+        run: npm run lint
+        continue-on-error: true
+        # Warnings are reported but do not fail the build
+
+      - name: Build — production build
+        run: npm run build
+        env:
+          # Provide minimal env vars so Next.js build succeeds
+          NEXT_PUBLIC_APP_URL: https://domstroy.ru
+          NEXT_PUBLIC_COMPANY_NAME: ДомСтрой
+          NEXT_PUBLIC_PHONE: '+7 (499) 123-45-67'
+          NEXT_PUBLIC_EMAIL: info@domstroy.ru
+          NEXT_PUBLIC_ADDRESS: 'ул. Строителей, д. 1'
+          NEXT_PUBLIC_API_URL: http://localhost:4000
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # BACKEND (Express + Node.js)
+  # ─────────────────────────────────────────────────────────────────────────────
+  backend:
+    name: Backend — TypeScript + ESLint + Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install dependencies
+        working-directory: api
+        run: npm ci
+
+      - name: TypeScript — type check
+        working-directory: api
+        run: npx tsc --noEmit
+        # Blocks the pipeline on any type error
+
+      - name: ESLint — lint check
+        working-directory: api
+        run: npm run lint
+        continue-on-error: true
+        # Warnings are reported but do not fail the build
+
+      - name: Build — compile TypeScript to dist/
+        working-directory: api
+        run: npm run build

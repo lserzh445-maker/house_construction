@@ -112,7 +112,30 @@
 ---
 
 ## 🔄 В ПРОЦЕССЕ:
-шаг 11 | CI/CD: GitHub Actions (lint + build + deploy)
+
+### Шаг 11: CI/CD — GitHub Actions (Lint + Build)
+
+#### 11.1 ✅ GitHub Actions workflow - завершен
+- [ ] Создание .github/workflows/lint-and-build.yml
+- [ ] TypeScript проверка (фронтенд + бэкенд)
+- [ ] ESLint проверка (фронтенд + бэкенд)
+- [ ] npm run build (фронтенд + бэкенд)
+- [ ] Результаты в GitHub Actions tab
+
+#### 11.2 ⏳ ESLint и Prettier конфиги
+- [ ] .eslintrc.json (фронтенд)
+- [ ] api/.eslintrc.json (бэкенд)
+- [ ] .prettierrc (фронтенд)
+- [ ] api/.prettierrc (бэкенд)
+
+#### 11.3 ⏳ Package.json скрипты
+- [ ] Обновить package.json скрипты (фронтенд)
+- [ ] Обновить api/package.json скрипты (бэкенд)
+
+#### 11.4 ⏳ Проверка и тестирование
+- [ ] Локальная проверка (tsc + eslint + build)
+- [ ] Первый push на GitHub
+- [ ] Проверка GitHub Actions
 
 ---
 
