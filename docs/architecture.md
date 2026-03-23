@@ -43,7 +43,7 @@ house_construction/
 │   ├── lib/api.ts               # Axios API client
 │   └── styles/globals.css       # Tailwind + global styles
 │
-├── api/                          # Node.js Backend (Express)
+├── backend/                      # Node.js Backend (Express)
 │   ├── src/
 │   │   ├── server.ts            # Express server entry point
 │   │   ├── routes/
@@ -123,17 +123,17 @@ house_construction/
 npm install
 
 # 2. Install backend dependencies
-cd api && npm install && cd ..
+cd backend && npm install && cd ..
 
 # 3. Copy env files
 cp .env.example .env
-cp api/.env.example api/.env
+cp backend/.env.example backend/.env
 
 # 4. Run frontend
 npm run dev        # http://localhost:3000
 
 # 5. Run backend (in another terminal)
-npm run api:dev    # http://localhost:4000
+npm run api:dev    # http://localhost:4000  (runs from backend/)
 
 # 6. OR run everything with Docker
 docker-compose up

@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-api/node_modules/
+backend/node_modules/
 .pnp
 .pnp.js
 
@@ -9,7 +9,7 @@ api/node_modules/
 out/
 
 # Backend build output
-api/dist/
+backend/dist/
 dist/
 
 # Production builds

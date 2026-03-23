@@ -12,9 +12,9 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
-    "api:dev": "cd api && npm run dev",
-    "api:build": "cd api && npm run build",
-    "api:start": "cd api && npm run start"
+    "api:dev": "cd backend && npm run dev",
+    "api:build": "cd backend && npm run build",
+    "api:start": "cd backend && npm run start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
