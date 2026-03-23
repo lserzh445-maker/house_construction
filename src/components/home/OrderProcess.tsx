@@ -80,7 +80,7 @@ interface StepItemProps {
   index: number
 }
 
-function StepItem({ step, index }: StepItemProps) {
+function StepItem({ step, index: _index }: StepItemProps) {
   const Icon = step.icon
   const isLast = step.step === 8
 

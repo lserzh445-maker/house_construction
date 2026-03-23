@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { motion } from 'framer-motion'
 import { ArrowRight, Clock, User } from 'lucide-react'
@@ -91,11 +92,11 @@ export default function LatestBlog({ posts, className = '' }: LatestBlogProps) {
                 <Card className="h-full flex flex-col">
                   {/* Image */}
                   <CardImage aspectRatio="16/9">
-                    <img
+                    <Image
                       src={post.image}
                       alt={post.title}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3">
                       <Badge variant="default" className="text-[11px]">{post.category}</Badge>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { Clock, User, ArrowLeft, Tag } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
@@ -43,11 +44,12 @@ export default function BlogPostPage({ post }: BlogPostPageProps) {
 
         {/* Cover image */}
         <div className="w-full aspect-video rounded-2xl overflow-hidden mb-8 bg-neutral-light">
-          <img
+          <Image
             src={post.image}
             alt={post.title}
-            className="w-full h-full object-cover"
-            loading="eager"
+            fill
+            priority
+            className="object-cover"
           />
         </div>
 

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Phone, Calculator, ChevronDown, MessageCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import CallForm from '@/components/forms/CallForm'
-import { fadeIn, fadeInUp, stagger, viewport } from '@/lib/animations'
+import { fadeIn } from '@/lib/animations'
 import styles from './HeroSection.module.css'
 
 /* ─── Props ──────────────────────────────────────────────────────────── */

@@ -18,7 +18,7 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-export default function ProjectReviews({ reviews, projectName }: ProjectReviewsProps) {
+export default function ProjectReviews({ reviews, projectName: _projectName }: ProjectReviewsProps) {
   const [page, setPage] = useState(1)
   const PAGE_SIZE = 4
   const total = reviews.length
