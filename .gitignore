@@ -62,3 +62,6 @@ coverage/
 # Test / generated files
 test-*.pdf
 ИТОГОВЫЙ_ОТЧЕТ.txt
+
+# Generated at build time
+public/sitemap.xml

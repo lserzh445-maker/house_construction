@@ -3,12 +3,12 @@ import Link from 'next/link'
 import { Phone, Mail, MapPin, MessageCircle, Send } from 'lucide-react'
 
 const catalogLinks = [
-  { label: 'Все проекты', href: '/catalog' },
-  { label: 'Одноэтажные дома', href: '/catalog/one-story' },
-  { label: 'Двухэтажные дома', href: '/catalog/two-story' },
-  { label: 'С мансардой', href: '/catalog/with-mansard' },
-  { label: 'Финские дома', href: '/catalog/finnish' },
-  { label: 'Коттеджи', href: '/catalog/cottages' },
+  { label: 'Все проекты',       href: '/catalog' },
+  { label: 'Одноэтажные дома',  href: '/catalog?floors=1' },
+  { label: 'Двухэтажные дома',  href: '/catalog?floors=2' },
+  { label: 'С мансардой',       href: '/catalog?floors=mansard' },
+  { label: 'Финские дома',      href: '/catalog?style=finnish' },
+  { label: 'Коттеджи',          href: '/catalog?style=canadian' },
 ]
 
 const companyLinks = [
