@@ -1,6 +1,7 @@
 import React from 'react'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { Clock, User, ArrowRight } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
@@ -60,11 +61,11 @@ export default function BlogPage({ posts }: BlogPageProps) {
           {filtered.map((post) => (
             <Link key={post.id} href={`/blog/${post.slug}`} className="group card flex flex-col">
               <div className="relative aspect-video overflow-hidden bg-neutral-light">
-                <img
+                <Image
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute top-3 left-3 badge bg-primary text-white text-xs">
                   {post.category}

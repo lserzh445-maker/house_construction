@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { GetServerSideProps } from 'next'
+import Image from 'next/image'
 import { MapPin, Home } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import CallForm from '@/components/forms/CallForm'
@@ -85,11 +86,11 @@ export default function PortfolioPage({ items }: PortfolioPageProps) {
               className="group card text-left"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-neutral-light">
-                <img
+                <Image
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                 <span className="absolute top-3 left-3 badge bg-primary text-white text-xs">
@@ -126,10 +127,11 @@ export default function PortfolioPage({ items }: PortfolioPageProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="aspect-[4/3] rounded-xl mb-4 overflow-hidden">
-                <img
+                <Image
                   src={selected.image}
                   alt={selected.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
               <h3 className="font-heading font-semibold text-xl mb-2">{selected.title}</h3>

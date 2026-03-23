@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Pencil, Truck, Shield, ArrowRight } from 'lucide-react'
 import Layout from '@/components/layout/Layout'
 import CallForm from '@/components/forms/CallForm'
@@ -77,11 +78,11 @@ export default function ServicesPage() {
               </Link>
             </div>
             <div className={`rounded-2xl aspect-[4/3] overflow-hidden ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
-              <img
+              <Image
                 src={image}
                 alt={title}
-                className="w-full h-full object-cover"
-                loading="lazy"
+                fill
+                className="object-cover"
               />
             </div>
           </div>
