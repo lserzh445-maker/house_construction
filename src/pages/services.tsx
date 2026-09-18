@@ -77,12 +77,14 @@ export default function ServicesPage() {
                 <ArrowRight size={18} />
               </Link>
             </div>
-            <div className={`rounded-2xl aspect-[4/3] overflow-hidden ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
+            <div className={`relative rounded-2xl aspect-[4/3] overflow-hidden ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
               <Image
                 src={image}
                 alt={title}
                 fill
                 className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority={idx === 0}
               />
             </div>
           </div>
